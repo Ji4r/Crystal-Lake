@@ -101,6 +101,8 @@ GameObject:
   - component: {fileID: 4175129902554526502}
   - component: {fileID: 2512603483459769312}
   - component: {fileID: 5718107458598029751}
+  - component: {fileID: 2039709782715259477}
+  - component: {fileID: 1701902288494337525}
   m_Layer: 0
   m_Name: Networking
   m_TagString: Untagged
@@ -140,19 +142,22 @@ MonoBehaviour:
   headlessStartMode: 0
   editorAutoStart: 0
   sendRate: 60
-  offlineScene: 
+  offlineScene: Assets/Crystal Lake/Scenes/MainMenu.unity
   onlineScene: 
   offlineSceneLoadDelay: 0
-  transport: {fileID: 5718107458598029751}
+  transport: {fileID: 2039709782715259477}
   networkAddress: localhost
   maxConnections: 4
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 0}
+  playerPrefab: {fileID: 879503597340804979, guid: 0c01177c98f319b45aa78a5099979be6, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 1
-  spawnPrefabs: []
+  spawnPrefabs:
+  - {fileID: 879503597340804979, guid: 55793df68cc3d4d448f36f4eb05ba415, type: 3}
+  - {fileID: 7202049337428363846, guid: 633b2298135697d4680e22c4886a1aad, type: 3}
+  - {fileID: 2945506108923532244, guid: f3e1f645404f125429e179affe294381, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -168,6 +173,7 @@ MonoBehaviour:
   evaluationMethod: 0
   evaluationInterval: 3
   timeInterpolationGui: 0
+  gameplayPlayerPrefab: {fileID: 7202049337428363846, guid: 633b2298135697d4680e22c4886a1aad, type: 3}
 --- !u!114 &5718107458598029751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,3 +190,46 @@ MonoBehaviour:
   Timeout: 25
   AllowSteamRelay: 1
   UseNextGenSteamNetworking: 1
+--- !u!114 &2039709782715259477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8834978971213362442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b0fecffa3f624585964b0d0eb21b18e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror.Transports::kcp2k.KcpTransport
+  port: 7777
+  DualMode: 1
+  NoDelay: 1
+  Interval: 10
+  Timeout: 10000
+  RecvBufferSize: 7361536
+  SendBufferSize: 7361536
+  FastResend: 2
+  ReceiveWindowSize: 4096
+  SendWindowSize: 4096
+  MaxRetransmit: 40
+  MaximizeSocketBuffers: 1
+  ReliableMaxMessageSize: 297433
+  UnreliableMaxMessageSize: 1194
+  debugLog: 0
+  statisticsGUI: 0
+  statisticsLog: 0
+--- !u!114 &1701902288494337525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8834978971213362442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6442dc8070ceb41f094e44de0bf87274, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Mirror::Mirror.NetworkManagerHUD
+  offsetX: 0
+  offsetY: 0
