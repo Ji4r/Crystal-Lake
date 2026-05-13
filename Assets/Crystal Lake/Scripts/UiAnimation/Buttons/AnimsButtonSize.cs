@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace MyProj
 {
+    [RequireComponent(typeof(HandlerButton))]
     public class AnimsButtonSize : MonoBehaviour, IAnimsButton
     {
         [SerializeField] private ScriptableButton presetAnims;

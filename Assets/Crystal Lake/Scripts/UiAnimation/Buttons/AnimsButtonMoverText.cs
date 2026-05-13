@@ -9,6 +9,7 @@ namespace MyProj
         Right
     }
 
+    [RequireComponent(typeof(HandlerButton))]
     public class AnimsButtonMoverText : MonoBehaviour, IAnimsButton
     {
         [SerializeField] private ScriptableButton presetAnims;

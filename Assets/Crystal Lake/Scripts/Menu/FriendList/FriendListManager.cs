@@ -9,6 +9,7 @@ namespace MyProj
 {
     public class FriendListManager : MonoBehaviour
     {
+        [Header("Список друзей")]
         [SerializeField] private Button buttonRefreshFriends;
         [SerializeField] private Button buttonOpenFriendsList;
         [SerializeField] private TextMeshProUGUI textFriendCount;
@@ -23,6 +24,7 @@ namespace MyProj
 
         private void OnEnable()
         {
+            LoadFriends();
             buttonRefreshFriends.onClick.AddListener(LoadFriends);
             buttonOpenFriendsList.onClick.AddListener(LoadFriends);
         }

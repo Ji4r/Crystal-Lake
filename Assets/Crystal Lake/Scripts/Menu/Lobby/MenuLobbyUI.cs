@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Steamworks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
@@ -13,16 +14,16 @@ namespace MyProj
         private CardPlayerInLobbyData[] slotForPlayers;
 
         [Header("Buttons")]
-        [SerializeField]
-        private Button buttonCreateLobby;
+        [SerializeField] private Button buttonCreateLobby;
+        [SerializeField] private Button buttonStartGame;
+        [SerializeField] private Button buttonExitlobby;
 
-        [SerializeField]
-        private Button buttonStartGame;
-        [SerializeField]
-        private Button buttonExitlobby;
+        [Header("Текст")]
+        [SerializeField] private TextMeshProUGUI countPlayerInLobby;
+        [SerializeField] private string textCountPlayerInLobbyFormat = "Players";
 
-        [Inject]
-        private LobbyManager lobbyManager;
+        [Inject] private LobbyManager lobbyManager;
+        [Inject] private MyNetworkManager myNetworkManager;
 
         private bool isLobbyCreatedOrJoined;
 
@@ -62,6 +63,11 @@ namespace MyProj
             lobbyManager.CreateLobby();
         }
 
+        private void UpdateCountPlayerInLobbyText(int count)
+        {
+            countPlayerInLobby.text = $"{count}/{myNetworkManager.maxConnections} " + textCountPlayerInLobbyFormat;
+        }
+
         private void ExitFromLobby()
         {
             if (LobbyManager.CurrentLobbyID ==
@@ -82,6 +88,8 @@ namespace MyProj
                 lobbyManager.GetPlayers();
 
             RenderPlayers(players);
+
+            UpdateCountPlayerInLobbyText(players.Count);
 
             UpdateStartButton();
         }

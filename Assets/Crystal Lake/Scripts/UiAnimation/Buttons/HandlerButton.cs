@@ -3,7 +3,6 @@ using UnityEngine.EventSystems;
 
 namespace MyProj
 {
-    [RequireComponent(typeof(IAnimsButton))]
     public class HandlerButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
     {
         private IAnimsButton[] buttonAnims;

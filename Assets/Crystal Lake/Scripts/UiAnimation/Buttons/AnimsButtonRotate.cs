@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace MyProj
 {
+    [RequireComponent(typeof(HandlerButton))]
     public class AnimsButtonRotate : MonoBehaviour, IAnimsButton
     {
         [Header("При наведении на кнопку")]

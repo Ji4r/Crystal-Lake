@@ -55,14 +55,9 @@ namespace MyProj
 
         public override void OnServerAddPlayer(NetworkConnectionToClient conn)
         {
-            Debug.Log($"OnServerAddPlayer: {conn.connectionId}");
-
-            // Если игрок уже есть — ничего не создаём
             if (conn.identity != null)
             {
-                Debug.LogWarning(
-                    $"Connection {conn.connectionId} already has a player"
-                );
+                Debug.LogWarning($"Connection {conn.connectionId} already has a player");
 
                 return;
             }

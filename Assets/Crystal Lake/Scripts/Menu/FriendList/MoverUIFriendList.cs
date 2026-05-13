@@ -10,8 +10,10 @@ namespace MyProj
         [SerializeField] private RectTransform panelFriendList;
         [SerializeField] private Button btnMove;
         [SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private Transform transformChildrenBtnFriendList;
 
         [Header("Animation")]
+        [SerializeField] private float durationAnimChildrenBtnFriendList = 0.4f;
         [SerializeField] private float duration = 0.35f;
 
         [SerializeField] private float hiddenX = 420f;
@@ -54,7 +56,8 @@ namespace MyProj
             sequence.Join(
                 panelFriendList.DOAnchorPosX(targetX, duration)
                     .SetEase(Ease.OutCubic)
-            );
+            ).Join(transformChildrenBtnFriendList.DOLocalRotate(isOpened == true ? new Vector3(0, 0, 0) : new Vector3(0, 0, 180),
+            durationAnimChildrenBtnFriendList));
 
             // Fade animation
             if (canvasGroup != null)
