@@ -1764,6 +1764,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f12d16f3d1f0fe48a4b41ec4dd6c4b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MyProj.MouseLook
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   mouseSensivity: 0.1
   playerBody: {fileID: 6582525758676196550}
   cameraPlayer: {fileID: 2957101743443812105}

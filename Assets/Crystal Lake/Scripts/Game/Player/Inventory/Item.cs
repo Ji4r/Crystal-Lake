@@ -49,7 +49,7 @@ namespace MyProj
         }
 
 
-        public void Interact(RaycastHit hit)
+        public void Interact(RaycastHit hit, AllPartPlayer allPartPlayer)
         {
         }
     }

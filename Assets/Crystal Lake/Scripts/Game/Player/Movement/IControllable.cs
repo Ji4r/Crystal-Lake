@@ -11,7 +11,8 @@ namespace MyProj
         public void CanceledSprint();
         public void Interact();
         public void DropProp();
-        public void UseProp(); 
+        public void UseProp();
+        public void Exit();
         public void SwitchSlot1();
         public void SwitchSlot2();
         public void SwitchSlot3();

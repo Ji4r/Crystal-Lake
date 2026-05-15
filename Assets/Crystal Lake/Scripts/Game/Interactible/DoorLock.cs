@@ -10,12 +10,12 @@ namespace MyProj
 
         [SerializeField] private KeyForDoor key;
 
-        public void Interact(RaycastHit hit)
+        public void Interact(RaycastHit hit, AllPartPlayer allPartPlayer)
         {
             isOpen = !isOpen; 
         }
 
-        public void OpenDoorLock()
+        public virtual void OpenDoorLock()
         {
             isOpen = !isOpen;
             Debug.Log(isOpen);

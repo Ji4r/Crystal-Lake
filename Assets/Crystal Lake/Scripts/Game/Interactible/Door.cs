@@ -41,7 +41,7 @@ namespace MyProj
         }
 #endif
 
-        public void Interact(RaycastHit hit)
+        public void Interact(RaycastHit hit, AllPartPlayer allPartPlayer)
         {
             Debug.Log("Interact with door");
             if (doorUseLock)

@@ -22,7 +22,7 @@ namespace MyProj
         void Awake()
         {
             cameraTrans = cameraPlayer.transform;
-            SetHideCursor(false);
+            SetStateCursor(false);
         }
 
         public override void OnStartClient()
@@ -47,7 +47,7 @@ namespace MyProj
             playerBody.Rotate(Vector3.up * mouseX);
         }
 
-        public void SetHideCursor(bool onEnabled)
+        public void SetStateCursor(bool onEnabled)
         {
             CursorIsHide = onEnabled;
 

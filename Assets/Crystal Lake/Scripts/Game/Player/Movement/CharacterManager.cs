@@ -23,6 +23,8 @@ namespace MyProj
 
         private bool canControl = true;
 
+        private IExitHandler exitHandler;
+
         private void Awake()
         {
             characterInteracter = allPartPlayer.Get<CharacterInteracter>();
@@ -82,7 +84,7 @@ namespace MyProj
             }
             else
             {
-                interactibleObject.Interact(hitInfo);
+                interactibleObject.Interact(hitInfo, allPartPlayer);
             }
         }
 
@@ -164,6 +166,32 @@ namespace MyProj
             item.RpcSetVisible(true);
 
             inventory.DropItem();
+        }
+
+        public void Exit()
+        {
+            Debug.Log($"Exit - {exitHandler}");
+            exitHandler?.Exit();
+        }
+
+        public void SetExitHandler(IExitHandler handler)
+        {
+            if (handler == null)
+            {
+                Debug.LogWarning("Попытка установить null обработчику выхода");
+                return;
+            }
+
+            exitHandler = handler;
+            Debug.Log($"SetExitHandler - {exitHandler}");
+        }
+
+        public void ClearExitHandler(IExitHandler handler)
+        {
+            if (exitHandler == handler)
+                exitHandler = null;
+
+            //Устонавливаем базовый ui чтобы при нажатии у нас открывалось меню паузы.
         }
     }
 }

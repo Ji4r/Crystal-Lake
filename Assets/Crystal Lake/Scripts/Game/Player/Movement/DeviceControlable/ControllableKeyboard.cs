@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -37,6 +38,8 @@ namespace MyProj
             inputSystem.Gameplay.Interactive.performed += InteractiblePerformed;
             inputSystem.Gameplay.DropItem.performed += DropItemPerformed;
             inputSystem.Gameplay.UseProp.performed += UsePropPerformed;
+            inputSystem.Ui.Exit.performed += ExitPerformed;
+            inputSystem.Gameplay.Exit.performed += ExitPerformed;
             inputSystem.Gameplay._1Slot.performed += _1SlotPerformed;
             inputSystem.Gameplay._2Slot.performed += _2SlotPerformed;
             inputSystem.Gameplay._3Slot.performed += _3SlotPerformed;
@@ -54,6 +57,8 @@ namespace MyProj
             inputSystem.Gameplay.Interactive.performed -= InteractiblePerformed;
             inputSystem.Gameplay.DropItem.performed -= DropItemPerformed;
             inputSystem.Gameplay.UseProp.performed -= UsePropPerformed;
+            inputSystem.Gameplay.Exit.performed -= ExitPerformed;
+            inputSystem.Ui.Exit.performed -= ExitPerformed;
             inputSystem.Gameplay._1Slot.performed -= _1SlotPerformed;
             inputSystem.Gameplay._2Slot.performed -= _2SlotPerformed;
             inputSystem.Gameplay._3Slot.performed -= _3SlotPerformed;
@@ -180,5 +185,10 @@ namespace MyProj
 
 
         #endregion
+
+        public void ExitPerformed(InputAction.CallbackContext obj)
+        {
+            controllable.Exit();
+        }
     }
 }
