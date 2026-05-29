@@ -27,6 +27,7 @@
   <Project Path="Zenject-TestFramework.csproj" />
   <Project Path="Telepathy.csproj" />
   <Project Path="UniTask.TextMeshPro.csproj" />
+  <Project Path="ParrelSync.csproj" />
   <Project Path="Zenject-PoolMonitor-Editor.csproj" />
   <Project Path="Mirror.CompilerSymbols.csproj" />
   <Project Path="UniTask.Editor.csproj" />

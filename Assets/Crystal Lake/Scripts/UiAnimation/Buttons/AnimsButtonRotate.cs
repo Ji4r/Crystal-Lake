@@ -27,14 +27,16 @@ namespace MyProj
         {
             KillAnims();
 
-            spriteTransform.DOLocalRotateQuaternion(rotateOnHover, durationAnimsOnHover).SetEase(easeScheduleHover);
+            spriteTransform.DOLocalRotateQuaternion(rotateOnHover, durationAnimsOnHover).SetEase(easeScheduleHover)
+                .SetLink(spriteTransform.gameObject);
         }
 
         public void OnExit()
         {
             KillAnims();
 
-            spriteTransform.DOLocalRotateQuaternion(baseRotate, durationAnimsOnHover).SetEase(easeScheduleHover);
+            spriteTransform.DOLocalRotateQuaternion(baseRotate, durationAnimsOnHover).SetEase(easeScheduleHover)
+                .SetLink(spriteTransform.gameObject);
         }
 
 

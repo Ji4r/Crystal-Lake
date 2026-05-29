@@ -12,6 +12,7 @@ namespace MyProj
         public void Interact();
         public void DropProp();
         public void UseProp();
+        public void UseFlashlight();
         public void Exit();
         public void SwitchSlot1();
         public void SwitchSlot2();

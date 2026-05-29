@@ -2,6 +2,7 @@ using Mirror;
 using System;
 using System.Collections;
 using UnityEngine;
+using Zenject;
 
 namespace MyProj
 {
@@ -18,7 +19,6 @@ namespace MyProj
         [SerializeField] private float walkSpeed;
         [SerializeField] private float sprintSpeed;
         [SerializeField] private float crounchSpeed;
-        [SerializeField] private float durationTransitionSpeed;
         [SerializeField, Tooltip("Высота колайдера при приседании")] 
         private float heightOnCrounch;
 
@@ -36,24 +36,45 @@ namespace MyProj
         [SyncVar, SerializeField] private float speedCurrent;
         [SerializeField] private Transform cameraCharacter;
 
+        private CharacterNoise noise;
+        private CharacterController controller;
+        private CharacterAnimator animator;
         private float baseHeight;
         private Coroutine switchSpeedCoroutine;
-        private CharacterController controller;
         private Vector3 direction;
         private bool isSprint;
         private bool isCrounch;
         private bool isMoving;
         private Vector3 externalVelocity;
         private float knockbackTimer;
-        private CharacterAnimator animator;
         private float animatorForward;
         private Vector3 baseCenter;
         private Vector3 baseCameraPosition;
+        private float transitionIdleToWalk;
+        private float transitionWalkToRun;
+
+
+        [Inject]
+        public void Construct()
+        {
+        }
+
+        //[Inject]
+        //public void Construct()
+        //{
+        //    Debug.Log($"1");
+        //    transitionIdleToWalk = DifficultyGame.Instance.Current.TransitionBetweenIdlAndWlking;
+        //    transitionWalkToRun = DifficultyGame.Instance.Current.TransitionBetweenWalkingAndRunning;
+        //    Debug.Log($"transitionIdleToWalk - {transitionIdleToWalk}, transitionWalkToRun - {transitionWalkToRun}");
+        //}
 
         private void Awake()
         {
+            ApplyDifficulty();
             animator = allPartPlayer.Get<CharacterAnimator>();
             controller = GetComponent<CharacterController>();
+            noise = allPartPlayer.Get<CharacterNoise>();
+
             baseHeight = controller.height;
             baseCameraPosition = cameraCharacter.localPosition;
             baseCenter = controller.center;
@@ -73,6 +94,29 @@ namespace MyProj
         }
 #endif
 
+        private void ApplyDifficulty()
+        {
+            if (DifficultyGame.Instance == null)
+            {
+                Debug.LogWarning("DifficultyGame instance is not found. Using default values for transitions.");
+                return;
+            }
+
+            if (DifficultyGame.Instance.Current == null)
+            {
+                Debug.LogWarning("DifficultyGame.Current is not found. Using default values for transitions.");
+                return;
+            }
+
+            var diff =
+                DifficultyGame.Instance.Current;
+
+            transitionIdleToWalk =
+                diff.TransitionBetweenIdlAndWlking;
+
+            transitionWalkToRun =
+                diff.TransitionBetweenWalkingAndRunning;
+        }
         public void ApplyKnockback(Vector3 force, float duration = 0.3f)
         {
             externalVelocity = force;
@@ -90,6 +134,7 @@ namespace MyProj
             Vector2 clearInput = new Vector2(direction.x, direction.z);
             this.direction = direction;
             direction = transform.right * direction.x + transform.forward * direction.z;
+
             // 👉 если есть откидывание — можно отключить управление
             if (knockbackTimer > 0)
             {
@@ -131,34 +176,6 @@ namespace MyProj
                 }
             }
 
-            //if (!isSprint)
-            //{
-            //    if (direction.magnitude >= 0.2f)
-            //    {
-            //        if (IsCrounch)
-            //        {
-            //            isSprint = false;
-            //            isCrounch = true;
-            //            isMoving = true;
-
-            //            OnStartCrouching?.Invoke();
-            //        }
-            //        else
-            //        {
-            //            isSprint = false;
-            //            isCrounch = false;
-            //            isMoving = true;
-
-            //            OnStartWalking?.Invoke();
-            //        }
-            //    }
-            //    else
-            //    {
-            //        isMoving = false;
-            //        OnStopMoving?.Invoke();
-            //    }
-            //}
-
             if (isSprint)
             {
                 if (clearInput.y > 0)
@@ -173,6 +190,22 @@ namespace MyProj
                 if (direction.magnitude < 0.1f)
                 {
                     CanceledSprint();
+                }
+            }
+
+            if (isMoving)
+            {
+                if (isSprint)
+                {
+                    noise.MakeNoise(NoiseType.Run);
+                }
+                else if (IsCrounch)
+                {
+                    noise.MakeNoise(NoiseType.Crouch);
+                }
+                else
+                {
+                    noise.MakeNoise(NoiseType.Walk);
                 }
             }
 
@@ -191,16 +224,9 @@ namespace MyProj
 
             float targetForward = clearInput.y;
 
-            animatorForward = Mathf.Lerp(
-                animatorForward,
-                targetForward,
-                Time.deltaTime * sprintSpeed
-            );
+            animatorForward = Mathf.Lerp(animatorForward, targetForward, Time.deltaTime * sprintSpeed);
 
-            Vector2 animVector = new Vector2(
-                clearInput.x,
-                animatorForward
-            );
+            Vector2 animVector = new Vector2(clearInput.x, animatorForward);
 
             animator.SetSpeed(animVector);
         }
@@ -229,7 +255,7 @@ namespace MyProj
                     cameraCharacter.localPosition.z
                 );
                 CanceledSprint();
-                StartCoroutine(SwitchStateSpeed(crounchSpeed));
+                StartCoroutine(SwitchStateSpeed(crounchSpeed, transitionIdleToWalk));
             }
             else
             {
@@ -243,7 +269,7 @@ namespace MyProj
                 controller.center = baseCenter;
                 cameraCharacter.localPosition = baseCameraPosition;
 
-                StartCoroutine(SwitchStateSpeed(walkSpeed));
+                StartCoroutine(SwitchStateSpeed(walkSpeed, transitionIdleToWalk));
             }
 
             isCrounch = !IsCrounch;
@@ -264,7 +290,7 @@ namespace MyProj
             if (switchSpeedCoroutine != null)
                 StopCoroutine(switchSpeedCoroutine);
 
-            switchSpeedCoroutine = StartCoroutine(SwitchStateSpeed(sprintSpeed));
+            switchSpeedCoroutine = StartCoroutine(SwitchStateSpeed(sprintSpeed, transitionWalkToRun));
 
             OnStartSprinting?.Invoke();
         }
@@ -283,25 +309,28 @@ namespace MyProj
             }
 
             float targetSpeed = IsCrounch ? crounchSpeed : walkSpeed;
-            switchSpeedCoroutine = StartCoroutine(SwitchStateSpeed(targetSpeed));
+
+            switchSpeedCoroutine = StartCoroutine(SwitchStateSpeed(targetSpeed, transitionIdleToWalk));
 
             OnStopSprinting?.Invoke();
         }
 
-        private IEnumerator SwitchStateSpeed(float newValue)
+        private IEnumerator SwitchStateSpeed(float newValue, float duration)
         {
             float startSpeed = speedCurrent;
             float elapsedTime = 0f;
 
-            while (elapsedTime < durationTransitionSpeed)
+            while (elapsedTime < duration)
             {
                 elapsedTime += Time.deltaTime;
-                float t = elapsedTime / durationTransitionSpeed;
+
+                float t = elapsedTime / duration;
 
                 speedCurrent = Mathf.Lerp(startSpeed, newValue, t);
 
                 yield return null;
             }
+
             speedCurrent = newValue;
             switchSpeedCoroutine = null;
         }

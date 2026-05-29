@@ -16,6 +16,7 @@ namespace MyProj
         private Inventory inventory;
         private QuickSlotInventory quickSlotInventory;
         private CharacterAnimator characterAnimator;
+        private Flashlight flashlight;
         private UseProp useProp;
 
         private IInteractible interactibleObject;
@@ -34,6 +35,7 @@ namespace MyProj
             quickSlotInventory = allPartPlayer.Get<QuickSlotInventory>();
             characterAnimator = allPartPlayer.Get<CharacterAnimator>();
             useProp = allPartPlayer.Get<UseProp>();
+            flashlight = allPartPlayer.Get<Flashlight>();
         }
 
         public void LocalDissable()
@@ -110,25 +112,25 @@ namespace MyProj
         public void SwitchSlot1()
         {
             if (!canControl) return;
-            quickSlotInventory.SetActiveSlot(0);
+            quickSlotInventory.CmdSetActiveSlot(0);
         }
 
         public void SwitchSlot2()
         {
             if (!canControl) return;
-            quickSlotInventory.SetActiveSlot(1);
+            quickSlotInventory.CmdSetActiveSlot(1);
         }
 
         public void SwitchSlot3()
         {
             if (!canControl) return;
-            quickSlotInventory.SetActiveSlot(2);
+            quickSlotInventory.CmdSetActiveSlot(2);
         }
 
         public void SwitchSlot4()
         {
             if (!canControl) return;
-            quickSlotInventory.SetActiveSlot(3);
+            quickSlotInventory.CmdSetActiveSlot(3);
         }
 
         public void UseProp()
@@ -137,6 +139,10 @@ namespace MyProj
             useProp.UsePropInHandle();
         }
 
+        public void UseFlashlight()
+        {
+            flashlight.UseFlashlight();
+        }
 
         [Command]
         private void CmdPickupItem(NetworkIdentity itemIdentity)
@@ -144,9 +150,11 @@ namespace MyProj
             if (itemIdentity == null)
                 return;
 
-            Item item = itemIdentity.GetComponent<Item>();
+            if (!itemIdentity.TryGetComponent<Item>(out var item))
+                return;
 
             inventory.AddItem(item.item, item.gameObject);
+            RpcAttachItem(itemIdentity, netIdentity);
             item.RpcSetVisible(false);
         }
 
@@ -164,13 +172,20 @@ namespace MyProj
                 return;
 
             item.RpcSetVisible(true);
-
+            item.RpcDropItem();
             inventory.DropItem();
+        }
+
+        [ClientRpc]
+        private void RpcAttachItem(NetworkIdentity itemIdentity, NetworkIdentity playerIdentity)
+        {
+            var itemObj = itemIdentity.gameObject;
+            var player = playerIdentity.GetComponent<CharacterManager>();
+            player.quickSlotInventory.SetParentFromProp(itemObj);
         }
 
         public void Exit()
         {
-            Debug.Log($"Exit - {exitHandler}");
             exitHandler?.Exit();
         }
 

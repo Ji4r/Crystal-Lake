@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace MyProj
 {
-    [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(Rigidbody), typeof(NetworkTransformReliable))]
     public abstract class Item : NetworkBehaviour, IInteractible
     {
-
+        [Header("Найстройки предмета")]
         [SerializeField] private NetworkTransformReliable networkTransform;
         [SerializeField] private Collider itemCollider;
         [SerializeField] private Rigidbody rb;
@@ -27,10 +27,10 @@ namespace MyProj
                 renderer.enabled = true;
             }
 
-            itemCollider.enabled = true;
+            itemCollider.enabled = false;
         }
 
-        public void HideVisual()
+        public void CmdHideVisual()
         {
             foreach (var renderer in renderers)
             {
@@ -44,8 +44,21 @@ namespace MyProj
         public void RpcSetVisible(bool value)
         {
             rb.isKinematic = !value;
-
             networkTransform.enabled = value;
+            if (value)
+            {
+                ShowVisual();
+            }
+            else
+            {
+                CmdHideVisual();
+            }
+        }
+
+        [ClientRpc]
+        public void RpcDropItem()
+        {
+            itemCollider.enabled = true;
         }
 
 

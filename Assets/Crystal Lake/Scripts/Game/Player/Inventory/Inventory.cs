@@ -1,15 +1,15 @@
+using Mirror;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace MyProj
 {
-    public class Inventory : MonoBehaviour, IPartPlayer
+    public class Inventory : NetworkBehaviour, IPartPlayer
     {
         [SerializeField] private Transform ineventoryPanel;
         [SerializeField] private float throwForce;
         [SerializeField] private Transform posDropItem;
-        [SerializeField] private QuickSlotInventory quiclSlotInventory;
+        public QuickSlotInventory quiclSlotInventory;
         [SerializeField] private Camera mainCamera;
 
         [HideInInspector] public List<InventorySlot> slots = new List<InventorySlot>();
@@ -43,7 +43,7 @@ namespace MyProj
                     if (i == activeSlot)
                     {
                         quiclSlotInventory.DissablePropInHandle();
-                        quiclSlotInventory.SetPropInHandle(activeSlot);
+                        quiclSlotInventory.CmdSetPropInHandle(activeSlot);
                     }
                     return;
                 }

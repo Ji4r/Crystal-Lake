@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 namespace MyProj
 {
@@ -49,6 +50,29 @@ namespace MyProj
         private CharacterGravity characterGravity;
         private HealthManager healthManager;
 
+        [Inject]
+        public void Construct()
+        {
+            energyConsumptionAndActivityType = new(energyConsumptionAtList.Count);
+            Debug.Log($"DifficultyGame.Instance {DifficultyGame.Instance}");
+            Debug.Log($"DifficultyGame.Instance.Current {DifficultyGame.Instance.Current}");
+            foreach (var item in energyConsumptionAtList)
+            {
+                if (item.TypeOfActivity == TypeOfActivity.Running)
+                    energyConsumptionAndActivityType.Add(item.TypeOfActivity, DifficultyGame.Instance.Current.StaminaConsumptionWhenRunning);
+                else if (item.TypeOfActivity == TypeOfActivity.Jumping)
+                    energyConsumptionAndActivityType.Add(item.TypeOfActivity, DifficultyGame.Instance.Current.StaminaConsumptionWhenJump);
+                else
+                {
+                    Debug.LogWarning("Такой тип активности не найден");
+                    energyConsumptionAndActivityType.Add(item.TypeOfActivity, 100);
+                }
+            }
+
+            staminaRecoveryIdleState = DifficultyGame.Instance.Current.IdleRecoveryRate;
+            staminaRecoveryMoveState = DifficultyGame.Instance.Current.MoveRecoveryRate;
+        }
+
         private void Awake()
         {
             Initialized();
@@ -85,13 +109,6 @@ namespace MyProj
             characterMovement = GetComponent<CharacterMovement>();
             characterGravity = GetComponent<CharacterGravity>();
             healthManager = GetComponent<HealthManager>();
-
-            energyConsumptionAndActivityType = new(energyConsumptionAtList.Count);
-
-            foreach (var item in energyConsumptionAtList)
-            {
-                energyConsumptionAndActivityType.Add(item.TypeOfActivity, item.EnergyConsumption);
-            }
         }
 
         private IEnumerator RecoveryStamina()
@@ -124,6 +141,7 @@ namespace MyProj
         {
             if (UseEndlessStamina)
                 return true;
+
 
             if (!energyConsumptionAndActivityType.TryGetValue(typeActivity, out float writeOff))
             {

@@ -36,6 +36,7 @@ namespace MyProj
         public bool IsGrounded => onGround;
 
         [SyncVar] private bool isInfinityJump;
+        private CharacterNoise noise;
         private Vector3 velocity;
         private bool onGround;
         private CharacterController controller;
@@ -56,6 +57,7 @@ namespace MyProj
 
         private void Awake()
         {
+            noise = allPartPlayer.Get<CharacterNoise>();
             animator = allPartPlayer.Get<CharacterAnimator>();
         }
 
@@ -103,6 +105,7 @@ namespace MyProj
 
             velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
             controller.Move(velocity * Time.deltaTime);
+            noise.MakeNoise(NoiseType.Jump);
             animator.SetJump();
         }
 

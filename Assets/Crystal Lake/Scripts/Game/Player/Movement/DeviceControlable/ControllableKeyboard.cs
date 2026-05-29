@@ -44,6 +44,7 @@ namespace MyProj
             inputSystem.Gameplay._2Slot.performed += _2SlotPerformed;
             inputSystem.Gameplay._3Slot.performed += _3SlotPerformed;
             inputSystem.Gameplay._4Slot.performed += _4SlotPerformed;
+            inputSystem.Gameplay.Flashlight.performed += UseFlashlightPerformed;
         }
 
         private void OnDisable()
@@ -58,6 +59,7 @@ namespace MyProj
             inputSystem.Gameplay.DropItem.performed -= DropItemPerformed;
             inputSystem.Gameplay.UseProp.performed -= UsePropPerformed;
             inputSystem.Gameplay.Exit.performed -= ExitPerformed;
+            inputSystem.Gameplay.Flashlight.performed -= UseFlashlightPerformed;
             inputSystem.Ui.Exit.performed -= ExitPerformed;
             inputSystem.Gameplay._1Slot.performed -= _1SlotPerformed;
             inputSystem.Gameplay._2Slot.performed -= _2SlotPerformed;
@@ -121,21 +123,10 @@ namespace MyProj
 
         public void ReadMovement()
         {
-            Vector2 targetMove =
-        inputSystem.Gameplay.Movement.ReadValue<Vector2>();
+            Vector2 targetMove = inputSystem.Gameplay.Movement.ReadValue<Vector2>();
 
-            currentMove = Vector2.SmoothDamp(
-                currentMove,
-                targetMove,
-                ref smoothVelocity,
-                smoothTime
-            );
-
-            controllable.Move(new Vector3(
-                currentMove.x,
-                0,
-                currentMove.y
-            ));
+            currentMove = Vector2.SmoothDamp(currentMove, targetMove, ref smoothVelocity, smoothTime);
+            controllable.Move(new Vector3(currentMove.x, 0, currentMove.y));
 
             //var inputDir = inputSystem.Gameplay.Movement.ReadValue<Vector2>();
             //var direction = new Vector3(inputDir.x, 0, inputDir.y);
@@ -152,6 +143,12 @@ namespace MyProj
         {
             controllable.UseProp();
         }
+
+        private void UseFlashlightPerformed(InputAction.CallbackContext context)
+        {
+            controllable.UseFlashlight();
+        }
+
         #region props
         public void DropItemPerformed(InputAction.CallbackContext obj)
         {

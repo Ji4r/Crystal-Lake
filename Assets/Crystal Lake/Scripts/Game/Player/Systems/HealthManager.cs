@@ -14,6 +14,5 @@ namespace MyProj
         public byte CurrentHealth => currentHealth;
 
         private byte currentHealth;
-
     }
 }

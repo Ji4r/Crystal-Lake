@@ -1,3 +1,4 @@
+using Mirror;
 using System;
 using UnityEngine;
 
@@ -5,6 +6,7 @@ namespace MyProj
 {
     public class UseProp : MonoBehaviour, ILocalOnly
     {
+        [SerializeField] private NetworkIdentity thisPlayer;
         [SerializeField] private Camera gameCamera;
         [SerializeField] private QuickSlotInventory inventory;
         [SerializeField] private int activeSlot;
@@ -34,11 +36,9 @@ namespace MyProj
             if (gameObj == null)
                 return; 
 
-            if (gameObj.TryGetComponent<IUseProp>(out var iUseProp))
+            if (gameObj.TryGetComponent<ItemUse>(out var iUseProp))
             {
-                iUseProp.Use(gameCamera);
-                if (iUseProp.IsDisposable)
-                    inventory.DestroyPropInHandle();
+                iUseProp.Use(gameCamera, thisPlayer, inventory);
             }
         }
 

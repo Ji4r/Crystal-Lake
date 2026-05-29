@@ -27,7 +27,8 @@ namespace MyProj
         private NotesWithCode[] notesWithCodes;
 
         [SyncVar] private bool isPropertyAvailable; // Свободен объект для взаимодействия
-        [SyncVar] private bool keypadIsOpen;
+        [SyncVar(hook = nameof(OnKeypadIsOpenChanged))] private bool keypadIsOpen;
+
         [SyncVar] private byte numberOfAttemptsOpenLock;
 
         private IUseKeypadCode objectWithKeypad;
@@ -96,11 +97,7 @@ namespace MyProj
         {
             if (ParseCode())
             {
-                objectWithKeypad?.OpenLock();
                 CmdSetStateKeypad(true);
-                StartCoroutine(AnimationTextOpen());
-                userInput = string.Empty;
-                CmdSetNumberOfAttemptsOpenLock(0);
             }
             else
             {
@@ -152,9 +149,9 @@ namespace MyProj
                 mouseLook.SetStateCursor(true);
                 colider.enabled = false;
                 inputReader.SetActiveMap(MapInputSystem.UI);
-                //characterMnagement.cameraControll.controllerUi.SetActiveUi(!characterMnagement.cameraControll.controllerUi.ActiveUi); // кароче тут включается ui
             }
         }
+
 
         public void Exit()
         {
@@ -175,6 +172,17 @@ namespace MyProj
             characterManager.ClearExitHandler(this);
         }
 
+        
+        private void OnKeypadIsOpenChanged(bool oldValue, bool newValue)
+        {
+            if (newValue)
+            {
+                objectWithKeypad?.OpenLock();
+                StartCoroutine(AnimationTextOpen());
+                userInput = string.Empty;
+                CmdSetNumberOfAttemptsOpenLock(0);
+            }
+        }
 
         [Command(requiresAuthority = false)]
         private void CmdSetAvailable(bool value)

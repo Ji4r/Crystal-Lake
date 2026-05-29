@@ -27,29 +27,33 @@ namespace MyProj
         public void OnEnter()
         {
             KillAnims();
-  
-            btnTransform.DOScale(sizeOnHover, presetAnims.DurationAnimsOnHover).SetEase(presetAnims.EaseScheduleHover);
+            
+            btnTransform.DOScale(sizeOnHover, presetAnims.DurationAnimsOnHover).SetEase(presetAnims.EaseScheduleHover)
+                .SetLink(btnTransform.gameObject);
         }
 
         public void OnExit()
         {
             KillAnims();
 
-            btnTransform.DOScale(baseSize, presetAnims.DurationAnimsOnHover).SetEase(presetAnims.EaseScheduleHover);
+            btnTransform.DOScale(baseSize, presetAnims.DurationAnimsOnHover).SetEase(presetAnims.EaseScheduleHover)
+                .SetLink(btnTransform.gameObject); ;
         }
 
         public void OnDown()
         {
             KillAnims();
 
-            btnTransform.DOScale(sizeOnClick, presetAnims.DurationAnimsOnHover).SetEase(presetAnims.EaseScheduleHover);
+            btnTransform.DOScale(sizeOnClick, presetAnims.DurationAnimsOnHover).SetEase(presetAnims.EaseScheduleHover)
+                .SetLink(btnTransform.gameObject);
         }
 
         public void OnUp()
         {
             KillAnims();
 
-            btnTransform.DOScale(sizeOnHover, presetAnims.DurationAnimsOnHover).SetEase(presetAnims.EaseScheduleHover);
+            btnTransform.DOScale(sizeOnHover, presetAnims.DurationAnimsOnHover).SetEase(presetAnims.EaseScheduleHover)
+                .SetLink(btnTransform.gameObject);
         }
 
 

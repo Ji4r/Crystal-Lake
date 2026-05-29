@@ -1,5 +1,6 @@
 using Mirror;
 using UnityEngine;
+using Zenject;
 
 namespace MyProj
 {
@@ -7,6 +8,9 @@ namespace MyProj
     {
         [SerializeField]
         private GameObject gameplayPlayerPrefab;
+
+
+        [Inject] private DiContainer container;
 
         public GameObject GameplayPlayerPrefab => gameplayPlayerPrefab;
 
@@ -43,6 +47,9 @@ namespace MyProj
                         startPos.rotation
                     );
 
+                container.InjectGameObject(newPlayer);
+                Debug.Log(container + " Conn!!!!!!!");
+
                 NetworkServer.ReplacePlayerForConnection(
                     conn,
                     newPlayer,
@@ -55,14 +62,18 @@ namespace MyProj
 
         public override void OnServerAddPlayer(NetworkConnectionToClient conn)
         {
-            if (conn.identity != null)
-            {
-                Debug.LogWarning($"Connection {conn.connectionId} already has a player");
+            Transform startPos = GetStartPosition();
 
-                return;
-            }
+            GameObject player = startPos != null
+                ? Instantiate(playerPrefab, startPos.position, startPos.rotation)
+                : Instantiate(playerPrefab);
 
-            base.OnServerAddPlayer(conn);
+            container.InjectGameObject(player);
+
+            player.name =
+                $"{playerPrefab.name} [connId={conn.connectionId}]";
+
+            NetworkServer.AddPlayerForConnection(conn, player);
         }
     }
 }

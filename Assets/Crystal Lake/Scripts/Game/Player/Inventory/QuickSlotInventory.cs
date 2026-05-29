@@ -1,3 +1,4 @@
+using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -5,7 +6,7 @@ using UnityEngine.Events;
 namespace MyProj
 {
     [RequireComponent(typeof(Inventory))]
-    public class QuickSlotInventory : MonoBehaviour, IPartPlayer
+    public class QuickSlotInventory : NetworkBehaviour, IPartPlayer
     {
         [SerializeField] private Transform QuickInventoryPanel;
         [SerializeField] private Transform positionSpawnPropInHandle;
@@ -20,8 +21,7 @@ namespace MyProj
         private bool isHandisOccupied = true;
         private int lastActiveSlot;
 
-
-        private void Start()
+        public override void OnStartLocalPlayer()
         {
             lastActiveSlot = -1;
             isHandisOccupied = true;
@@ -33,9 +33,11 @@ namespace MyProj
                 }
             }
 
+            Debug.Log($"Кол-во слотов {slots.Count}");
             if (slots.Count != 0)
             {
-                SetActiveSlot(0);
+                Debug.Log("Слот 0 устоноален");
+                CmdSetActiveSlot(0);
             }
 
             originalSize = new List<Vector3>();
@@ -46,7 +48,8 @@ namespace MyProj
             }
         }
 
-        public void SetActiveSlot(int indexSlot)
+        [Command]
+        public void CmdSetActiveSlot(int indexSlot)
         {
             DissablePropInHandle();
 
@@ -59,7 +62,7 @@ namespace MyProj
             }
 
             lastActiveSlot = indexSlot;
-            SetPropInHandle(indexSlot);
+            CmdSetPropInHandle(indexSlot);
         }
 
         public int GetActiveSlot()
@@ -72,13 +75,23 @@ namespace MyProj
             prop.transform.SetParent(positionSpawnPropInHandle);
         }
 
-        public GameObject SetPropInHandle(int indexSlot)
+        [Command]
+        public void CmdSetPropInHandle(int indexSlot)
         {
+            RpcSetPropInHandle(indexSlot);
+        }
+
+        [ClientRpc]
+        private void RpcSetPropInHandle(int indexSlot)
+        {
+            if (slots.Count <= indexSlot)
+                return;
+
             if (slots[indexSlot].Item == null)
-            { return null; }
+            { return; }
 
             if (slots[indexSlot].Item.Prefab == null)
-            { return null; }
+            { return; }
 
             GameObject gameObj = null;
 
@@ -90,10 +103,10 @@ namespace MyProj
                     gameObj = child.gameObject;
                     break;
                 }
-            }        
+            }
 
             if (gameObj == null)
-                return null;
+                return;
 
             currentPropInHandle = gameObj;
 
@@ -114,7 +127,6 @@ namespace MyProj
             item.ShowVisual();
 
             ChangeActiveSlot?.Invoke(lastActiveSlot, gameObj);
-            return gameObj;
         }
 
         public GameObject GetCurrentProp()
@@ -122,6 +134,7 @@ namespace MyProj
             return currentPropInHandle;
         }
 
+        [Command]
         public void DissablePropInHandle()
         {
             if (isHandisOccupied == false)
@@ -132,11 +145,13 @@ namespace MyProj
             }
         }
 
+        [Command]
         public void DestroyPropInHandle()
         {
             if (isHandisOccupied == false)
             {
                 slots[lastActiveSlot].SetItem(null);
+                originalSize[lastActiveSlot] = Vector3.zero;
                 Destroy(currentPropInHandle);
                 currentPropInHandle = null;
                 isHandisOccupied = true;

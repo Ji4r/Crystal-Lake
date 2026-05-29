@@ -1,5 +1,6 @@
-using UnityEngine;
+using System.Drawing;
 using System.Linq;
+using UnityEngine;
 
 namespace MyProj
 {
@@ -9,7 +10,7 @@ namespace MyProj
         public Transform spawnPoint;
         [Tooltip("Точка под один предмет")]
         public bool pointForOneItem = false;
-        public bool isFreePoint = true;
+        [HideInInspector] public bool pointOccupied = false;
     }
 
     public class SpawnerByPoints : MonoBehaviour
@@ -35,7 +36,7 @@ namespace MyProj
         /// <returns>Transform выбранной точки спавна или null, если свободных точек нет.</returns>
         public Transform GetFreeRandomPos()
         {
-            var freePoints = spawnPoints.Where(x => x.isFreePoint).ToArray();
+            var freePoints = spawnPoints.Where(x => !x.pointOccupied != false).ToArray();
             if (freePoints.Length == 0)
             {
                 Debug.LogError("Нет свободных точек для спавна");
@@ -44,7 +45,7 @@ namespace MyProj
 
             var point = freePoints[Random.Range(0, freePoints.Length)];
             if (point.pointForOneItem)
-                point.isFreePoint = false;
+                point.pointOccupied = true;
 
             return point.spawnPoint;
         }
@@ -68,7 +69,7 @@ namespace MyProj
                     }
 
                     if (spawnPoint.pointForOneItem)
-                        spawnPoint.isFreePoint = true;
+                        spawnPoint.pointOccupied = false;
 
                     return;
                 }

@@ -1,7 +1,6 @@
 using Mirror;
 using Steamworks;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
@@ -19,6 +18,9 @@ namespace MyProj
 
     public class LobbyManager : MonoBehaviour
     {
+        [SerializeField] private DifficultyGame difficultyPrefab;
+        [SerializeField] private TypeDiffecaltyGame difficultyGame;
+
         public static CSteamID CurrentLobbyID { get; private set; }
 
         public event Action OnLobbyUpdated;
@@ -57,6 +59,11 @@ namespace MyProj
 
             myNetworkManager.playerPrefab =
                 myNetworkManager.GameplayPlayerPrefab;
+
+            DifficultyGame game = Instantiate(difficultyPrefab);
+            game.SetDifficulty(difficultyGame);
+
+            NetworkServer.Spawn(game.gameObject);
 
             myNetworkManager.ServerChangeScene(SceneName.GAME);
         }
@@ -161,9 +168,7 @@ namespace MyProj
 
         #region Steam Callbacks
 
-        private void OnLobbyCreated(
-            LobbyCreated_t callback
-        )
+        private void OnLobbyCreated(LobbyCreated_t callback)
         {
             if (callback.m_eResult != EResult.k_EResultOK)
             {
@@ -183,8 +188,7 @@ namespace MyProj
             myNetworkManager.StartHost();
         }
 
-        private void OnJoinRequest(
-            GameLobbyJoinRequested_t callback)
+        private void OnJoinRequest(GameLobbyJoinRequested_t callback)
         {
             if (CurrentLobbyID != CSteamID.Nil)
             {

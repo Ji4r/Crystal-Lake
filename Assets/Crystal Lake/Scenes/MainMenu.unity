@@ -10099,6 +10099,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5e03b3b3c36bb74d9c09b8c16079b14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MyProj.LobbyManager
+  difficultyPrefab: {fileID: 5169259776645838638, guid: 92d33b5334d49bf44a7c268e6738b7a0, type: 3}
+  difficultyGame: 1
 --- !u!4 &1530052478
 Transform:
   m_ObjectHideFlags: 0

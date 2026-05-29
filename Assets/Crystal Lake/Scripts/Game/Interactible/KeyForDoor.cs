@@ -1,13 +1,12 @@
 using UnityEngine;
+using Mirror;
 
 namespace MyProj
 {
-    public class KeyForDoor : MonoBehaviour, IUseProp
+    public class KeyForDoor : ItemUse
     {
         [SerializeField] private Camera cameraMain;
         [SerializeField] private LayerMask keyMask;
-
-        public bool IsDisposable => false;
 
         private void OnEnable()
         {
@@ -15,7 +14,7 @@ namespace MyProj
             Debug.Log(cameraMain.name + " fdfdsf");
         }
 
-        public void Use(Camera gameCamera)
+        public override void Use(Camera gameCamera, NetworkIdentity player, QuickSlotInventory inventory)
         {
             Debug.Log(cameraMain.transform.localPosition);
             Ray ray = new Ray(cameraMain.transform.position, cameraMain.transform.forward);

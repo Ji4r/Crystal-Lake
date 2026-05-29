@@ -8,7 +8,6 @@ namespace MyProj
     public class AllPartPlayer : NetworkBehaviour
     {
         private Dictionary<Type, IPartPlayer> partPlayer;
-
         
         private void Awake()
         {

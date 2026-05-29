@@ -10,11 +10,13 @@ namespace MyProj
         public string Code => code;
 
         private string code;
+        private CharacterUiView characterUiView;
 
 
         public void Interact(RaycastHit hit, AllPartPlayer allPartPlayer)
         {
-            //allPartPlayer.Get<NotesPartPlayer>().OpenNote(this);
+            characterUiView = allPartPlayer.Get<CharacterUiView>();
+            characterUiView.ShowNotes(code);
         }
 
         public void SetCode(string code, byte startPosition, byte fullCodeLength)

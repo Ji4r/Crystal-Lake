@@ -34,14 +34,16 @@ namespace MyProj
         {
             KillAnims();
 
-            animsMove = btnTextTransform.DOLocalMove(offsetPsition, presetAnims.DurationOffsetsPositionByX).SetEase(presetAnims.EaseMoveHover);
+            animsMove = btnTextTransform.DOLocalMove(offsetPsition, presetAnims.DurationOffsetsPositionByX).SetEase(presetAnims.EaseMoveHover)
+                .SetLink(btnTextTransform.gameObject);
         }
 
         public void OnExit()
         {
             KillAnims();
 
-            animsMove = btnTextTransform.DOLocalMove(basePosition, presetAnims.DurationOffsetsPositionByX).SetEase(presetAnims.EaseMoveHover);
+            animsMove = btnTextTransform.DOLocalMove(basePosition, presetAnims.DurationOffsetsPositionByX).SetEase(presetAnims.EaseMoveHover)
+                .SetLink(btnTextTransform.gameObject);
         }
 
         public void OnDown()
