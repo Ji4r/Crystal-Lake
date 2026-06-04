@@ -1,8 +1,6 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
 namespace MyProj
 {
@@ -31,9 +29,9 @@ namespace MyProj
 
         private Flashlight flashlight;
         private CharacterManager characterManager;
-        private CharacterUiView characterUiView;
         private MouseLook mouseLook;
         private IInputReader inputReader;
+        private GameObject currentWindow;
 
         private void OnEnable()
         {
@@ -56,7 +54,6 @@ namespace MyProj
 
             characterManager = allPartPlayer.Get<CharacterManager>();
             mouseLook = allPartPlayer.Get<MouseLook>();
-            characterUiView = allPartPlayer.Get<CharacterUiView>();
             inputReader = characterManager.GetComponent<IInputReader>();
         }
 
@@ -81,19 +78,12 @@ namespace MyProj
         public void ShowNotes(string text)
         {
             notesText.text = text;
-            notesWindow.SetActive(true);
-
-            inputReader.SetActiveMap(MapInputSystem.UI);
-            mouseLook.SetStateCursor(true);
-            characterManager.SetExitHandler(this);
+            ShowWindow(notesWindow);
         }
 
         public void HideNotes()
         {
-            notesWindow.SetActive(false);
-            inputReader.SetActiveMap(MapInputSystem.GAMEPLAY);
-            mouseLook.SetStateCursor(false);
-            characterManager.SetExitHandler(null);
+            HideWindow();
         }
 
         public void UpdateTextNotes(string text)
@@ -103,7 +93,27 @@ namespace MyProj
 
         public void Exit()
         {
-            HideNotes();
+            HideWindow();
+        }
+
+        private void ShowWindow(GameObject window)
+        {
+            window.SetActive(true);
+            currentWindow = window;
+
+            inputReader.SetActiveMap(MapInputSystem.UI);
+            mouseLook.SetStateCursor(true);
+            characterManager.SetExitHandler(this);
+        }
+
+        private void HideWindow()
+        {
+            currentWindow.SetActive(false);
+            currentWindow = null;
+
+            inputReader.SetActiveMap(MapInputSystem.GAMEPLAY);
+            mouseLook.SetStateCursor(false);
+            characterManager.SetExitHandler(null);
         }
     }
 }

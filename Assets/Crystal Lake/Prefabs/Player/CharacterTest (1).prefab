@@ -3476,6 +3476,7 @@ MonoBehaviour:
   syncInterval: 0
   editorSetCurrent: 0
   teleportKyda: {x: 0, y: 0, z: 0}
+  acceptTeleport: 0
   allPartPlayer: {fileID: 2241526584713410139}
   knockbackDamping: 5
   walkSpeed: 4
