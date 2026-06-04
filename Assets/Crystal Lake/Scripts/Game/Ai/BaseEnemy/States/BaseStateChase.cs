@@ -11,7 +11,7 @@ namespace MyProj
         {
             this.killDistance = killDistance;
         }
-
+            
         public override void EnterState() 
         {
             currentTraget = enemy.CurrentTarget;
@@ -21,13 +21,20 @@ namespace MyProj
 
         public override void UpdateState()
         {
-            if (!enemy.TryFindTargetCached())
+            var state = enemy.TryFindTargetCached(out var currentTargetOut); 
+            if (state == StateVisionEnemy.None)
             {
                 enemy.SetState(EnemyState.Searching);
                 return;
             }
+            else if (state == StateVisionEnemy.ByHalf && currentTargetOut != null)
+            {
+                enemy.CheckPosition = currentTargetOut.position;
+                enemy.SetState(EnemyState.CheckPosition);
+                return;
+            }
 
-            if (enemy.CurrentTarget != currentTraget)
+            if (enemy.CurrentTarget != null && enemy.CurrentTarget != currentTraget)
             {
                 Vector3 dirOldTarget = enemy.CurrentTarget.position - enemy.MyTransform.position;
                 Vector3 dirNewTarget = currentTraget.position - enemy.MyTransform.position;

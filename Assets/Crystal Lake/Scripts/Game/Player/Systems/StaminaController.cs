@@ -54,8 +54,6 @@ namespace MyProj
         public void Construct()
         {
             energyConsumptionAndActivityType = new(energyConsumptionAtList.Count);
-            Debug.Log($"DifficultyGame.Instance {DifficultyGame.Instance}");
-            Debug.Log($"DifficultyGame.Instance.Current {DifficultyGame.Instance.Current}");
             foreach (var item in energyConsumptionAtList)
             {
                 if (item.TypeOfActivity == TypeOfActivity.Running)

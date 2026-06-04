@@ -375,6 +375,7 @@ GameObject:
   - component: {fileID: 2143850095968573265}
   - component: {fileID: 7229806757092742327}
   - component: {fileID: 2379999610589569063}
+  - component: {fileID: 3832400561550104892}
   m_Layer: 0
   m_Name: Spot Light
   m_TagString: Untagged
@@ -491,6 +492,21 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &3832400561550104892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 944241185636738014}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c8bca95f7c947b4db5fb152a0d693d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: com.cqf.urpvolumetricfog.runtime::VolumetricAdditionalLight
+  anisotropy: 0.7
+  scattering: 0.6
+  radius: 0.05
 --- !u!1 &947529908559437183
 GameObject:
   m_ObjectHideFlags: 0
@@ -819,6 +835,9 @@ GameObject:
   - component: {fileID: 1174786355136430052}
   - component: {fileID: 554250637696147502}
   - component: {fileID: 4987315207838587228}
+  - component: {fileID: 4884626875191810724}
+  - component: {fileID: 4612368327508277954}
+  - component: {fileID: 5915939396063582104}
   - component: {fileID: 9070546670277409121}
   m_Layer: 6
   m_Name: QuickInventory
@@ -891,14 +910,58 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  allPartPlayer: {fileID: 2241526584713410139}
   QuickInventoryPanel: {fileID: 1174786355136430052}
-  positionSpawnPropInHandle: {fileID: 3827288096304344637}
-  indexPropChildrenCamera: 0
   slots: []
-  ChangeActiveSlot:
-    m_PersistentCalls:
-      m_Calls: []
-  originalSize: []
+--- !u!114 &4884626875191810724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2293483894023898883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 173fb7dfb03374a4a996df2606c3b71a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MyProj.HandController
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  allPartPlayer: {fileID: 2241526584713410139}
+  handPoint: {fileID: 3827288096304344637}
+--- !u!114 &4612368327508277954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2293483894023898883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93d9f455a4f79904ab156ca36983c3ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MyProj.InventoryData
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+--- !u!114 &5915939396063582104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2293483894023898883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e54e0158dc7c4942b108f3a6380c375, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MyProj.InventoryState
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  ActiveSlot: 0
+  ActiveItemNetId: 0
 --- !u!114 &9070546670277409121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -914,11 +977,11 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  ineventoryPanel: {fileID: 1174786355136430052}
   throwForce: 5
   posDropItem: {fileID: 1393234268649307240}
+  allPartPlayer: {fileID: 2241526584713410139}
+  ineventoryPanel: {fileID: 1174786355136430052}
   quiclSlotInventory: {fileID: 4987315207838587228}
-  mainCamera: {fileID: 2957101743443812105}
   slots: []
 --- !u!1 &2846434439782670724
 GameObject:
@@ -1267,6 +1330,151 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!1 &3908313867403667550
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4594847801504498067}
+  - component: {fileID: 6948386626164292369}
+  - component: {fileID: 413258564450232309}
+  m_Layer: 6
+  m_Name: VoiceChat
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4594847801504498067
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3908313867403667550}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6582525758676196550}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &6948386626164292369
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3908313867403667550}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &413258564450232309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3908313867403667550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3876a1ca9b6c8574bbb4d64affacf30e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VoiceRecorderTest
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &4010734324923948964
 GameObject:
   m_ObjectHideFlags: 0
@@ -1278,6 +1486,7 @@ GameObject:
   - component: {fileID: 26729987305514915}
   - component: {fileID: 6234788342255778941}
   - component: {fileID: 3637143503676480620}
+  - component: {fileID: 5288123140038471224}
   m_Layer: 8
   m_Name: Spot Light
   m_TagString: Untagged
@@ -1293,13 +1502,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4010734324923948964}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.029699814, y: 0.17357175, z: -0.010323939, w: -0.9843192}
+  m_LocalRotation: {x: 0.054795787, y: 0.07470499, z: 0.011257109, w: -0.9956354}
   m_LocalPosition: {x: -0.000020345053, y: 0, z: 0.5073}
   m_LocalScale: {x: 1.3333334, y: 1.3333334, z: 1.3333334}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5159735148388235645}
-  m_LocalEulerAnglesHint: {x: 3.558, y: -19.983, z: 0.575}
+  m_LocalEulerAnglesHint: {x: -6.361, y: -8.536, z: -0.82}
 --- !u!108 &6234788342255778941
 Light:
   m_ObjectHideFlags: 0
@@ -1313,7 +1522,7 @@ Light:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 55
   m_Range: 12
-  m_SpotAngle: 30
+  m_SpotAngle: 50
   m_InnerSpotAngle: 1
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
@@ -1394,6 +1603,21 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &5288123140038471224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4010734324923948964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c8bca95f7c947b4db5fb152a0d693d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: com.cqf.urpvolumetricfog.runtime::VolumetricAdditionalLight
+  anisotropy: 0.73
+  scattering: 0.1
+  radius: 0.1
 --- !u!1 &4098298730174416067
 GameObject:
   m_ObjectHideFlags: 0
@@ -1409,7 +1633,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &88279309339254607
 Transform:
   m_ObjectHideFlags: 0
@@ -2174,7 +2398,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9013409452675460206
 Transform:
   m_ObjectHideFlags: 0
@@ -3071,6 +3295,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 4594847801504498067}
   - {fileID: 8264980219955080187}
   - {fileID: 1729434449958516780}
   - {fileID: 6442654073123757447}
@@ -3213,6 +3438,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   allPartPlayer: {fileID: 2241526584713410139}
+  playerCamera: {fileID: 2957101743443812105}
 --- !u!114 &2350719944502631914
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3225,8 +3451,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d2d9da68420e4f448ae820cc5a75477, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MyProj.CharacterInteracter
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   playerCamera: {fileID: 8264980219955080187}
-  distanceRay: 2
+  distanceRay: 2.5
   ignoreLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -3246,6 +3475,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   editorSetCurrent: 0
+  teleportKyda: {x: 0, y: 0, z: 0}
   allPartPlayer: {fileID: 2241526584713410139}
   knockbackDamping: 5
   walkSpeed: 4
@@ -3373,10 +3603,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02912f425f89f1f4f835483c91d0a6cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MyProj.UseProp
+  allPartPlayer: {fileID: 2241526584713410139}
   thisPlayer: {fileID: 4020248036038911372}
   gameCamera: {fileID: 2957101743443812105}
-  inventory: {fileID: 4987315207838587228}
-  activeSlot: 0
 --- !u!114 &8191159024555307679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3488,6 +3717,7 @@ MonoBehaviour:
   timeOneStepBatteryConsumption: 5
   localLight: {fileID: 6234788342255778941}
   globalLight: {fileID: 7229806757092742327}
+  volumetricAdditionalLight: {fileID: 3832400561550104892}
   conusLight: {fileID: 4098298730174416067}
 --- !u!1 &7379647392210269645
 GameObject:

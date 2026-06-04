@@ -7,6 +7,7 @@ namespace MyProj
         Chase,
         Attack,
         TrafficOnNoise,
-        Searching
+        Searching,
+        CheckPosition
     }
 }

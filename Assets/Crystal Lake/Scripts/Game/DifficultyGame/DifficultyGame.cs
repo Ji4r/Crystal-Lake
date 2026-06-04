@@ -52,7 +52,6 @@ namespace MyProj
 
         public void SetDifficulty(TypeDiffecaltyGame newDifficulty)
         {
-            Debug.Log($"Setting difficulty to {newDifficulty}");
             difficulty = newDifficulty;
         }
 

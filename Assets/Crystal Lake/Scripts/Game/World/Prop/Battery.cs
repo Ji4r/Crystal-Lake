@@ -8,7 +8,7 @@ namespace MyProj
         [Header("Настройки батареи")]
         [SerializeField] private int batteryLevelToAdd = 20;
 
-        public override void Use(Camera gameCamera, NetworkIdentity player, QuickSlotInventory inventory)
+        public override void Use(Camera gameCamera, NetworkIdentity player)
         {
             if (ItemWasUsed)
                 return;
@@ -21,7 +21,9 @@ namespace MyProj
             if (IsDisposable)
             {
                 ItemWasUsed = true;
-                inventory.DestroyPropInHandle();
+
+                var characterManager = allPartPlayer.Get<CharacterManager>();
+                characterManager.CmdConsumeActiveItem();
             }
         }
     }

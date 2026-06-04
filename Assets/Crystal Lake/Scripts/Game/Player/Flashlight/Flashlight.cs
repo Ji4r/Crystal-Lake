@@ -18,6 +18,7 @@ namespace MyProj
         [SerializeField] private float timeOneStepBatteryConsumption = 0.5f;
         [SerializeField] private Light localLight;
         [SerializeField] private Light globalLight;
+        [SerializeField] private VolumetricAdditionalLight volumetricAdditionalLight;
         [SerializeField] private GameObject conusLight;
 
         [SyncVar(hook = nameof(ChangeEnableFlashlight))]
@@ -35,6 +36,7 @@ namespace MyProj
         {
             localLight.enabled = false;
             globalLight.enabled = false;
+            volumetricAdditionalLight.enabled = false;
             conusLight.SetActive(false);
 
             batteryLevel = maxBatteryLevel;
@@ -97,6 +99,7 @@ namespace MyProj
         private void ChangeEnableFlashlight(bool oldVal, bool newVal)
         {
             globalLight.enabled = newVal;
+            volumetricAdditionalLight.enabled = newVal;
             conusLight.SetActive(newVal);
 
             if (!isLocalPlayer)

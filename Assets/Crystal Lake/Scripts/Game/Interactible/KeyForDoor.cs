@@ -14,7 +14,7 @@ namespace MyProj
             Debug.Log(cameraMain.name + " fdfdsf");
         }
 
-        public override void Use(Camera gameCamera, NetworkIdentity player, QuickSlotInventory inventory)
+        public override void Use(Camera gameCamera, NetworkIdentity player)
         {
             Debug.Log(cameraMain.transform.localPosition);
             Ray ray = new Ray(cameraMain.transform.position, cameraMain.transform.forward);

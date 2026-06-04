@@ -4,6 +4,11 @@ using UnityEngine.AI;
 
 namespace MyProj
 {
+    public enum StateVisionEnemy
+    {
+        None, ByHalf, HadSeen
+    }
+
     public class BaseEnemy : NetworkBehaviour
     {
         [Header("AI Settings")]
@@ -15,6 +20,10 @@ namespace MyProj
         [SerializeField] private float viewAngle = 120f;
         [SerializeField] private float viewDistance = 15f;
         [SerializeField] private float whatTimeIsWatchingSide = 1f;
+        [SerializeField, Tooltip("Время, через которое враг замечает и бежит на игрока")]
+        private float afterHowLongDoINoticeThePlayer = 1f;
+        [SerializeField, Tooltip("Время, через которое враг пойдёт посмотреть на место где он видел силуэт игрока")]
+        private float investigateSilhouetteDelay = 0.5f;
         [Header("Noise Settings")]
         [SerializeField] private int radiusRotateHeadLeft = -45;
         [SerializeField] private int radiusRotateHeadRight = 45;
@@ -39,22 +48,31 @@ namespace MyProj
         public Transform MyTransform { get; private set; }
         public Vector3 LastKnownPlayerPosition { get; private set; }
         public int RadiusRotateHeadLeft => radiusRotateHeadLeft;
-        public int RadiusRotateHeadRight => radiusRotateHeadRight; 
+        public int RadiusRotateHeadRight => radiusRotateHeadRight;
+        public EnemySoundTrigger SoundTrigger => soundTrigger;
+        public Vector3 CheckPosition { get; set; }
+        public Vector3 LastMoveDirection { get; private set; }
+
+        private Vector3 previousSeenPosition;
 
         private FsmAiEnemy fsmEnemy;
         private float nextVisionScanTime;
-        private bool hasTargetCached;
+        private StateVisionEnemy hasTargetCached;
+        private float currentPlayerVisibleTime; // Время, в течение которого игрок был видим врагу
+        //private byte countPlayerVisibleFrames; // Количество кадров, в течение которых игрок был видим врагу
 
         private void Awake()
         {
             MyTransform = transform;
             NoisePosition = Vector3.zero;
             fsmEnemy = new FsmAiEnemy();
+            //countPlayerVisibleFrames = (byte)(afterHowLongDoINoticeThePlayer / visionScanRate);
 
-            fsmEnemy.AddState(new BaseStatePatrol(this, patrolPoints, soundTrigger));
+            fsmEnemy.AddState(new BaseStatePatrol(this, patrolPoints));
             fsmEnemy.AddState(new BaseStateChase(this, killDistance));
-            fsmEnemy.AddState(new BaseStateTrafficOnNoise(this, soundTrigger, distanceToNoise, whatTimeIsWatchingSide));
+            fsmEnemy.AddState(new BaseStateTrafficOnNoise(this, distanceToNoise, whatTimeIsWatchingSide));
             fsmEnemy.AddState(new BaseStateSearching(this, distanceToNoise, whatTimeIsWatchingSide));
+            fsmEnemy.AddState(new BaseStateCheckPosition(this, distanceToNoise, whatTimeIsWatchingSide));
         }
 
         public override void OnStartServer()
@@ -69,8 +87,6 @@ namespace MyProj
                 return;
 
             fsmEnemy.UpdateState();
-            if (CurrentTarget != null)
-                Debug.Log($"Current target: {CurrentTarget.name}");
         }
 
         [Server]
@@ -95,19 +111,62 @@ namespace MyProj
         public void StopDestination()
         {
             Agent.ResetPath();
-            CurrentTarget = null;
             nextVisionScanTime = Time.time;
         }
 
-        public bool TryFindTargetCached()
+        public StateVisionEnemy TryFindTargetCached(out Transform currentTarget)
         {
+            currentTarget = this.CurrentTarget;
             if (Time.time < nextVisionScanTime)
                 return hasTargetCached;
 
             nextVisionScanTime = Time.time + visionScanRate;
 
-            hasTargetCached = TryFindTarget();
-            
+            var oldHasTargetCached = CurrentTarget;
+            var hasVision = TryFindTarget();
+           
+
+            if (hasVision == true && CurrentTarget != null && CurrentTarget == oldHasTargetCached)
+            {
+                currentPlayerVisibleTime += visionScanRate;
+
+                if (currentPlayerVisibleTime >= afterHowLongDoINoticeThePlayer)
+                {
+                    hasTargetCached = StateVisionEnemy.HadSeen;
+                }
+            }
+            else if (CurrentTarget != oldHasTargetCached)
+            {
+                if (currentPlayerVisibleTime >= afterHowLongDoINoticeThePlayer)
+                {
+                    hasTargetCached = StateVisionEnemy.HadSeen;
+                }
+                else if (currentPlayerVisibleTime >= investigateSilhouetteDelay)
+                {
+                    hasTargetCached = StateVisionEnemy.ByHalf;
+                }
+                else
+                {
+                    hasTargetCached = StateVisionEnemy.None;
+                }
+                currentTarget = oldHasTargetCached;
+                currentPlayerVisibleTime = visionScanRate;
+            }
+            else
+            {
+                if (currentPlayerVisibleTime >= investigateSilhouetteDelay)
+                {
+                    hasTargetCached = StateVisionEnemy.ByHalf;
+                }
+                else
+                {
+                    hasTargetCached = StateVisionEnemy.None;
+                }
+                currentTarget = oldHasTargetCached;
+
+                currentPlayerVisibleTime = 0f;
+            }
+
             return hasTargetCached;
         }
 
@@ -147,8 +206,23 @@ namespace MyProj
                 {
                     if (hit.collider.transform.root.CompareTag("Player"))
                     {
+                        Vector3 currentPos = player.position;
+
+                        if (previousSeenPosition != Vector3.zero)
+                        {
+                            Vector3 delta = currentPos - previousSeenPosition;
+
+                            if (delta.sqrMagnitude > 0.001f)
+                            {
+                                LastMoveDirection = delta.normalized;
+                            }
+                        }
+
+                        previousSeenPosition = currentPos;
+
                         CurrentTarget = player;
-                        LastKnownPlayerPosition = player.position;
+                        LastKnownPlayerPosition = currentPos;
+
                         return true;
                     }
                 }
@@ -224,6 +298,9 @@ namespace MyProj
                     break;
                 case EnemyState.Searching:
                     fsmEnemy.ChangeState<BaseStateSearching>();
+                    break;
+                case EnemyState.CheckPosition:
+                    fsmEnemy.ChangeState<BaseStateCheckPosition>();
                     break;
                 default:
                     Debug.LogWarning($"State {newState} not implemented yet");

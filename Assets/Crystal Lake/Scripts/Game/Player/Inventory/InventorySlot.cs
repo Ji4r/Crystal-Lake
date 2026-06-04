@@ -29,6 +29,8 @@ namespace MyProj
 
         private void SetIcon(Sprite _icon = null)
         {
+            Debug.Log($"Icon = {_icon}");
+            Debug.Log("Setting icon for slot");
             Icon.color = new Color(1, 1, 1, 1);
             if (_icon != null)
             {

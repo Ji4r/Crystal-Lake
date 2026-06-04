@@ -43,17 +43,7 @@ namespace MyProj
 
         public void Interact(RaycastHit hit, AllPartPlayer allPartPlayer)
         {
-            Debug.Log("Interact with door");
-            if (doorUseLock)
-            {
-                if (!doorLock.isOpen)
-                {
-                    Debug.Log("Door is locked!");
-                    return;
-                }
-            }
-
-            isOpen = !isOpen;
+            allPartPlayer.Get<CharacterInteracter>().CmdToggleDoor(netIdentity);
         }
 
         public void SetState(bool oldValue, bool newValue)

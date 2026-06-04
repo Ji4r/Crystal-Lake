@@ -1,4 +1,6 @@
 using Mirror;
+using System.Net;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace MyProj
@@ -9,13 +11,16 @@ namespace MyProj
     public class CharacterManager : NetworkBehaviour, IControllable, ILocalOnly
     {
         [SerializeField] private AllPartPlayer allPartPlayer;
+        [SerializeField] private Camera playerCamera;
 
         private CharacterInteracter characterInteracter;
         private CharacterMovement characterMovement;
         private CharacterGravity characterGravity;
+        private InventoryData inventoryData;
+        private InventoryState inventoryState;
         private Inventory inventory;
         private QuickSlotInventory quickSlotInventory;
-        private CharacterAnimator characterAnimator;
+        private HandController handController;
         private Flashlight flashlight;
         private UseProp useProp;
 
@@ -33,9 +38,11 @@ namespace MyProj
             characterGravity = allPartPlayer.Get<CharacterGravity>();
             inventory = allPartPlayer.Get<Inventory>();
             quickSlotInventory = allPartPlayer.Get<QuickSlotInventory>();
-            characterAnimator = allPartPlayer.Get<CharacterAnimator>();
             useProp = allPartPlayer.Get<UseProp>();
             flashlight = allPartPlayer.Get<Flashlight>();
+            inventoryData = allPartPlayer.Get<InventoryData>();
+            inventoryState = allPartPlayer.Get<InventoryState>();
+            handController = allPartPlayer.Get<HandController>();
         }
 
         public void LocalDissable()
@@ -77,6 +84,7 @@ namespace MyProj
         public void Interact()
         {
             if (!canControl) return;
+            Debug.Log("Interact - " + interactibleObject);
             if (interactibleObject == null)
                 return;
 
@@ -106,31 +114,33 @@ namespace MyProj
             if (!canControl)
                 return;
 
-            CmdDropItem();
+            Vector3 throwDirection = (playerCamera.transform.forward + Vector3.up * 0.15f).normalized;
+
+            CmdDropItem(inventory.posDropItem.position, throwDirection, inventory.throwForce);
         }
 
         public void SwitchSlot1()
         {
             if (!canControl) return;
-            quickSlotInventory.CmdSetActiveSlot(0);
+            quickSlotInventory.SetActiveSlot(0);
         }
 
         public void SwitchSlot2()
         {
             if (!canControl) return;
-            quickSlotInventory.CmdSetActiveSlot(1);
+            quickSlotInventory.SetActiveSlot(1);
         }
 
         public void SwitchSlot3()
         {
             if (!canControl) return;
-            quickSlotInventory.CmdSetActiveSlot(2);
+            quickSlotInventory.SetActiveSlot(2);
         }
 
         public void SwitchSlot4()
         {
             if (!canControl) return;
-            quickSlotInventory.CmdSetActiveSlot(3);
+            quickSlotInventory.SetActiveSlot(3);
         }
 
         public void UseProp()
@@ -153,36 +163,82 @@ namespace MyProj
             if (!itemIdentity.TryGetComponent<Item>(out var item))
                 return;
 
-            inventory.AddItem(item.item, item.gameObject);
-            RpcAttachItem(itemIdentity, netIdentity);
+            int slot = inventoryData.TryAddItem(itemIdentity.netId);
+
+            if (slot == -1)
+                return;
+
             item.RpcSetVisible(false);
+
+            if (slot == inventoryState.ActiveSlot)
+            {
+                inventoryState.ActiveItemNetId = itemIdentity.netId;
+                return;
+            }
+
+            itemIdentity.transform.SetParent(handController.handPoint);
+            item.HideVisual();
+
+            //bool isActiveSlot = slot == inventoryState.ActiveSlot;
+
+            //if (isActiveSlot)
+            //{
+            //    inventoryState.ActiveItemNetId = itemIdentity.netId;
+            //}
+            //else
+            //{
+            //    item.RpcSetVisible(false);
+            //}
         }
 
         [Command]
-        private void CmdDropItem()
+        private void CmdDropItem(Vector3 dropPosition, Vector3 throwDirection, float throwForce)
         {
-            var gameObj = quickSlotInventory.GetCurrentProp();
+            int activeSlot = inventoryState.ActiveSlot;
 
-            if (gameObj == null)
+            uint itemNetId = inventoryData.RemoveItem(activeSlot);
+            inventoryState.ActiveItemNetId = 0;
+
+            if (itemNetId == 0)
                 return;
+
+            if (!NetworkServer.spawned.TryGetValue(itemNetId, out var identity))
+                return;
+
+            GameObject gameObj = identity.gameObject;
 
             Item item = gameObj.GetComponent<Item>();
 
             if (item == null)
                 return;
 
+            gameObj.transform.SetParent(null);
+
+            item.RpcRestoreWorldState();
+            gameObj.transform.position = dropPosition;
+
+            Rigidbody rb = gameObj.GetComponent<Rigidbody>();
+            rb.isKinematic = false;
+            rb.linearVelocity = throwDirection * throwForce;
+
             item.RpcSetVisible(true);
+            item.ShowVisual();
             item.RpcDropItem();
-            inventory.DropItem();
         }
 
-        [ClientRpc]
-        private void RpcAttachItem(NetworkIdentity itemIdentity, NetworkIdentity playerIdentity)
+        [Command]
+        public void CmdConsumeActiveItem()
         {
-            var itemObj = itemIdentity.gameObject;
-            var player = playerIdentity.GetComponent<CharacterManager>();
-            player.quickSlotInventory.SetParentFromProp(itemObj);
+            int slot = inventoryState.ActiveSlot;
+
+            uint itemId = inventoryData.RemoveItem(slot);
+
+            if (itemId == 0)
+                return;
+
+            inventoryState.ActiveItemNetId = 0;
         }
+
 
         public void Exit()
         {

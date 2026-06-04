@@ -9,12 +9,10 @@ namespace MyProj
         private Transform[] points;
         private Vector3 nextPoint;
         private Queue<Transform> queryPoint;
-        private EnemySoundTrigger soundTrigger;
 
-        public BaseStatePatrol(BaseEnemy enemy, Transform[] _points, EnemySoundTrigger _soundTrigger) : base(enemy)
+        public BaseStatePatrol(BaseEnemy enemy, Transform[] _points) : base(enemy)
         {
             points = _points;
-            soundTrigger = _soundTrigger;
 
             queryPoint = new Queue<Transform>(_points.Length);
             CreateQuery();
@@ -24,21 +22,30 @@ namespace MyProj
         public override void EnterState()
         {
             NearestPoint();
-            soundTrigger.OnPlayerDetected += OnPlayerDetectedThroughSound;
+            enemy.SoundTrigger.OnPlayerDetected += OnPlayerDetectedThroughSound;
         }
 
         public override void ExitState()
         {
-            soundTrigger.OnPlayerDetected -= OnPlayerDetectedThroughSound;
+            enemy.SoundTrigger.OnPlayerDetected -= OnPlayerDetectedThroughSound;
         }
 
         public override void UpdateState()
         {
             //enemy.DrawViewState();
-            if (enemy.TryFindTargetCached())
+            var state = enemy.TryFindTargetCached(out var currentTarget);
+            if (state == StateVisionEnemy.HadSeen)
             {
                 enemy.SetState(EnemyState.Chase);
+                return;
             }
+            else if (state == StateVisionEnemy.ByHalf && currentTarget != null)
+            {
+                enemy.CheckPosition = currentTarget.position;
+                enemy.SetState(EnemyState.CheckPosition);
+                return;
+            }
+
 
             MoveToPoint();
         }

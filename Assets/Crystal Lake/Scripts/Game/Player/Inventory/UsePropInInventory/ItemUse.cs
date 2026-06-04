@@ -17,7 +17,7 @@ namespace MyProj
             ItemWasUsed = false;
         }
 
-        public virtual void Use(Camera gameCamera, NetworkIdentity player, QuickSlotInventory inventory)
+        public virtual void Use(Camera gameCamera, NetworkIdentity player)
         {
             Debug.Log("Use item");
         }

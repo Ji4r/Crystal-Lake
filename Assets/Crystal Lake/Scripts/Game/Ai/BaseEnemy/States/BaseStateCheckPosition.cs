@@ -1,17 +1,17 @@
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using System;
-using System.Threading;
 using UnityEngine;
+using System.Threading;
 
 namespace MyProj
 {
-    public class BaseStateTrafficOnNoise : FsmAIEnemyState // проверка места где был шум
+    public class BaseStateCheckPosition : FsmAIEnemyState // проверка места
     {
         private float distancetoPointOnNoise;
         private CancellationTokenSource cancellationTokenSource;
         private int whatTimeIsWatchingSide;
 
-        public BaseStateTrafficOnNoise(BaseEnemy enemy, float distanceToNoise, float whatTimeIsWatchingSide) : base(enemy)
+        public BaseStateCheckPosition(BaseEnemy enemy, float distanceToNoise, float whatTimeIsWatchingSide) : base(enemy)
         {
             this.distancetoPointOnNoise = distanceToNoise;
             this.whatTimeIsWatchingSide = (int)whatTimeIsWatchingSide * 1000;
@@ -19,9 +19,10 @@ namespace MyProj
 
         public override void EnterState()
         {
+            Debug.Log("CheckPosition");
             cancellationTokenSource = new CancellationTokenSource();
             enemy.SoundTrigger.OnPlayerDetected += OnPlayerDetectedThroughSound;
-            enemy.SetDestination(enemy.NoisePosition);
+            enemy.SetDestination(enemy.CheckPosition);
             CheckPose(cancellationTokenSource.Token).Forget();
         }
 
@@ -44,7 +45,22 @@ namespace MyProj
             else if (state == StateVisionEnemy.ByHalf && currentTarget != null)
             {
                 enemy.CheckPosition = currentTarget.position;
-                enemy.SetState(EnemyState.CheckPosition);
+                EnterState();
+                return;
+            }
+            else if (state == StateVisionEnemy.None)
+            {
+                foreach (var noise in enemy.SoundTrigger.MemoryEnemies)
+                {
+                    if (noise.ExpireTime > Time.time)
+                    {
+                        enemy.CheckPosition = noise.NoisePosition;
+                        enemy.SetState(EnemyState.Searching);
+                        return;
+                    }
+                }
+
+                enemy.SetState(EnemyState.Patrol);
                 return;
             }
         }
@@ -106,6 +122,7 @@ namespace MyProj
 
         private void OnPlayerDetectedThroughSound(Vector3 vector)
         {
+
             enemy.SetNoisePosition(vector);
             cancellationTokenSource?.Cancel();
             cancellationTokenSource?.Dispose();

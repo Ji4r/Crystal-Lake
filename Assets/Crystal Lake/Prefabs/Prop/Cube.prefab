@@ -137,6 +137,7 @@ MonoBehaviour:
   renderers:
   - {fileID: 1355046430433077957}
   item: {fileID: 11400000, guid: 6fb451aa3a1d4cc42aaa6ce97579a5e2, type: 2}
+  isDisposable: 0
 --- !u!114 &5223180503624366743
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -172,7 +173,7 @@ MonoBehaviour:
   target: {fileID: 7852836774464616488}
   syncPosition: 1
   syncRotation: 1
-  syncScale: 0
+  syncScale: 1
   onlySyncOnChange: 1
   compressRotation: 1
   interpolatePosition: 1

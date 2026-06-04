@@ -1,9 +1,10 @@
+using Mirror;
 using System;
 using UnityEngine;
 
 namespace MyProj
 {
-    public class CharacterInteracter : MonoBehaviour, ILocalOnly
+    public class CharacterInteracter : NetworkBehaviour, ILocalOnly
     {
         [SerializeField] private Transform playerCamera;
         [SerializeField] private float distanceRay = 2f;
@@ -49,6 +50,17 @@ namespace MyProj
                 currentOutline.DisableOutline();
                 currentOutline = null;
             }
+        }
+
+        [Command]
+        public void CmdToggleDoor(NetworkIdentity doorId)
+        {
+            Door door = doorId.GetComponent<Door>();
+
+            if (door == null)
+                return;
+
+            door.isOpen = !door.isOpen;
         }
 
         public void LocalDissable()

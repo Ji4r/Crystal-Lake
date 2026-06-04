@@ -11,6 +11,8 @@ namespace MyProj
     {
         [Header("Право созидателя")]
         [SerializeField] private float editorSetCurrent;
+        [SerializeField] private Vector3 teleportKyda;
+        [SerializeField] private bool acceptTeleport;
 
         [Header("Обычные настройки")]
         [SerializeField] private AllPartPlayer allPartPlayer;
@@ -91,8 +93,17 @@ namespace MyProj
                 return;
 
             speedCurrent = editorSetCurrent;
+
+            if (acceptTeleport)
+                CmdApplyTeleport();
         }
 #endif
+
+        [Command]
+        private void CmdApplyTeleport()
+        {
+            transform.position = teleportKyda;
+        }
 
         private void ApplyDifficulty()
         {

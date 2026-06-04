@@ -12,6 +12,7 @@ namespace MyProj
         private float distancetoPointOnPointSeaching;
         private int whatTimeIsWatchingSide;
         private CancellationTokenSource cancellationTokenSource;
+        private bool isChekingPos;
 
         public BaseStateSearching(BaseEnemy enemy, float distancetoPointOnPointSeaching, float whatTimeIsWatchingSide) : base(enemy)
         {
@@ -21,6 +22,7 @@ namespace MyProj
 
         public override void EnterState()
         {
+            isChekingPos = false;
             cancellationTokenSource = new CancellationTokenSource();
             CheckLastPositionPlayer(cancellationTokenSource.Token).Forget();
         }
@@ -33,9 +35,26 @@ namespace MyProj
 
         public override void UpdateState()
         {
-            if (enemy.TryFindTargetCached())
+            var state = enemy.TryFindTargetCached(out var currentTarget);
+
+            if (state == StateVisionEnemy.HadSeen)
             {
                 enemy.SetState(EnemyState.Chase);
+                return;
+            }
+            else if (state == StateVisionEnemy.ByHalf && currentTarget != null)
+            {
+                enemy.CheckPosition = currentTarget.position;
+                enemy.SetState(EnemyState.CheckPosition);
+                return;
+            }
+
+            if (isChekingPos == true)
+                return;
+
+            else if (state == StateVisionEnemy.None)
+            {
+                enemy.SetState(EnemyState.Patrol);
                 return;
             }
         }
@@ -44,7 +63,10 @@ namespace MyProj
         {
             try
             {
-                enemy.SetDestination(enemy.LastKnownPlayerPosition);
+                isChekingPos = true;
+                Vector3 predictedPosition = enemy.LastKnownPlayerPosition + enemy.LastMoveDirection * 4f;
+                Debug.Log(enemy.LastKnownPlayerPosition);
+                enemy.SetDestination(predictedPosition);
 
                 await UniTask.WaitUntil(() =>
                 {
@@ -57,7 +79,7 @@ namespace MyProj
                            distancetoPointOnPointSeaching;
 
                 }, cancellationToken: token);
-
+                Debug.Log(enemy.MyTransform.position);
                 await RotateTo(enemy.RadiusRotateHeadRight, token);
 
                 await UniTask.Delay(whatTimeIsWatchingSide, cancellationToken: token);
@@ -69,16 +91,31 @@ namespace MyProj
                 // Проверить шкафы кровати и тд
                 await TryChekingSpot();
 
+                foreach (var noise in enemy.SoundTrigger.MemoryEnemies)
+                {
+                    if (noise.ExpireTime > Time.time)
+                    {
+                        enemy.CheckPosition = noise.NoisePosition;
+                        ExitState();
+                        EnterState();
+                        return;
+                    }
+                }
+
                 enemy.SetState(EnemyState.Patrol);
             }
             catch (OperationCanceledException)
             {
             }
+            finally
+            {
+                isChekingPos = false;
+            }
         }
 
         private async UniTask TryChekingSpot()
         {
-            
+            Debug.Log("Проверяю шкафы кровати и тд");
         }
 
         private async UniTask RotateTo(float angle, CancellationToken token)

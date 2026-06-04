@@ -1,51 +1,32 @@
 using Mirror;
-using System;
 using UnityEngine;
 
 namespace MyProj
 {
     public class UseProp : MonoBehaviour, ILocalOnly
     {
+        [SerializeField] private AllPartPlayer allPartPlayer;
         [SerializeField] private NetworkIdentity thisPlayer;
         [SerializeField] private Camera gameCamera;
-        [SerializeField] private QuickSlotInventory inventory;
-        [SerializeField] private int activeSlot;
-        private GameObject gameObj;
+        
+        private HandController handController;
 
-
-        private void OnEnable()
+        private void Awake()
         {
-            if (gameCamera == null)
-                throw new Exception("In UseProp отсутствует ссылка на камеру");
-
-            if (inventory == null)
-            {
-                Debug.LogWarning("В UseProp don't set link for QuickSlotInventory. Field - inventory = null");
-                return;
-            }
-            inventory.ChangeActiveSlot.AddListener(ChangeActiveSlot);
-        }
-
-        private void OnDisable()
-        {
-            inventory.ChangeActiveSlot.RemoveListener(ChangeActiveSlot);
+            handController = allPartPlayer.Get<HandController>();
         }
 
         public void UsePropInHandle()
         {
+            GameObject gameObj = handController.CurrentItem;
+
             if (gameObj == null)
-                return; 
+                return;
 
             if (gameObj.TryGetComponent<ItemUse>(out var iUseProp))
             {
-                iUseProp.Use(gameCamera, thisPlayer, inventory);
+                iUseProp.Use(gameCamera, thisPlayer);
             }
-        }
-
-        private void ChangeActiveSlot(int activeSlot, GameObject gameObj)
-        {
-            this.activeSlot = activeSlot;
-            this.gameObj = gameObj;
         }
 
         public void LocalDissable()

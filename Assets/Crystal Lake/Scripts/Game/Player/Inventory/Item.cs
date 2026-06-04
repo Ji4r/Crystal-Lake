@@ -13,6 +13,24 @@ namespace MyProj
         [SerializeField] private MeshRenderer[] renderers;
 
         public ItemScriptebleObject item;
+        private Vector3 originalScale;
+
+        private void Awake()
+        {
+            originalScale = transform.localScale;
+        }
+
+        public void ResetScale()
+        {
+            transform.localScale = originalScale;
+        }
+
+        [ClientRpc]
+        public void RpcRestoreWorldState()
+        {
+            ResetScale();
+            gameObject.layer = item.DefaultLayer;
+        }
 
         public void SetVisible(bool value)
         {
@@ -22,6 +40,18 @@ namespace MyProj
 
         public void ShowVisual()
         {
+            RpcShowVisual();
+        }
+
+        public void HideVisual()
+        {
+            RpcHideVisual();
+        }
+
+        [ClientRpc]
+        private void RpcShowVisual()
+        {
+            Debug.Log($"SHOW {name}");
             foreach (var renderer in renderers)
             {
                 renderer.enabled = true;
@@ -30,8 +60,10 @@ namespace MyProj
             itemCollider.enabled = false;
         }
 
-        public void CmdHideVisual()
+        [ClientRpc]
+        private void RpcHideVisual() 
         {
+            Debug.Log($"HIDE {name}");
             foreach (var renderer in renderers)
             {
                 renderer.enabled = false;
@@ -45,14 +77,14 @@ namespace MyProj
         {
             rb.isKinematic = !value;
             networkTransform.enabled = value;
-            if (value)
-            {
-                ShowVisual();
-            }
-            else
-            {
-                CmdHideVisual();
-            }
+            //if (value)
+            //{
+            //    ShowVisual();
+            //}
+            //else
+            //{
+            //    HideVisual();
+            //}
         }
 
         [ClientRpc]
