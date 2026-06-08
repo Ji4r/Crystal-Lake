@@ -174,6 +174,7 @@ namespace MyProj
                         else
                         {
                             OnStartWalking?.Invoke();
+                            animator.CancelEmotion();
                         }
                     }
                 }

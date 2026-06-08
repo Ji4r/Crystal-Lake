@@ -22,15 +22,36 @@ namespace MyProj
         [SerializeField] private TextMeshProUGUI countPlayerInLobby;
         [SerializeField] private string textCountPlayerInLobbyFormat = "Players";
 
+        [Header("Invites")]
+        [SerializeField] private Transform inviteContainer;
+        [SerializeField] private Image scrollbarBackground;
+        [SerializeField] private Image scrollbarHandle;
+        [SerializeField] private CardRequestIntiveLobby invitePrefab;
+
         [Inject] private LobbyManager lobbyManager;
         [Inject] private MyNetworkManager myNetworkManager;
 
         private bool isLobbyCreatedOrJoined;
+        private Color scrollbarlBackgroundOriginalColor;
+        private Color scrollbarVerticalOriginalColor;
+        private Color inviseColor;
+
 
         #region Unity
 
+        private void Start()
+        {
+            scrollbarlBackgroundOriginalColor = scrollbarBackground.color;
+            scrollbarVerticalOriginalColor = scrollbarHandle.color;
+            inviseColor = new Color(0, 0, 0, 0);
+
+            scrollbarBackground.color = inviseColor;
+            scrollbarHandle.color = inviseColor;
+        }
+
         private void OnEnable()
         {
+            lobbyManager.OnLobbyInviteReceived += CreateInviteCard;
             buttonCreateLobby.onClick.AddListener(CreateLobby);
             buttonStartGame.onClick.AddListener(lobbyManager.StartLobby);
             buttonExitlobby.onClick.AddListener(ExitFromLobby);
@@ -42,6 +63,7 @@ namespace MyProj
 
         private void OnDisable()
         {
+            lobbyManager.OnLobbyInviteReceived -= CreateInviteCard;
             buttonCreateLobby.onClick.RemoveListener(CreateLobby);
             buttonStartGame.onClick.RemoveListener(lobbyManager.StartLobby);
             buttonExitlobby.onClick.RemoveListener(ExitFromLobby);
@@ -50,6 +72,41 @@ namespace MyProj
         }
 
         #endregion
+
+        private void CreateInviteCard(CSteamID inviterId,CSteamID lobbyId)
+        {
+            scrollbarBackground.color = scrollbarlBackgroundOriginalColor;
+            scrollbarHandle.color = scrollbarVerticalOriginalColor;
+
+            CardRequestIntiveLobby card = Instantiate(invitePrefab, inviteContainer);
+
+            string nickname = SteamFriends.GetFriendPersonaName(inviterId);
+
+            Texture2D avatar = SteamExtenshionalTool.GetSteamAvatar(inviterId);
+
+            card.SetData(nickname, avatar, lobbyId);
+
+            card.Initialize((lobbyId) => 
+                {
+                    SteamMatchmaking.JoinLobby(lobbyId);
+                    Destroy(card.gameObject);
+                },
+
+                () => 
+                {
+                    Destroy(card.gameObject);
+                    UpdateInviteScrollbar();
+                }
+            );
+        }
+
+        private void UpdateInviteScrollbar()
+        {
+            bool hasInvites = inviteContainer.childCount > 0;
+
+            scrollbarBackground.color = hasInvites ? scrollbarlBackgroundOriginalColor : inviseColor;
+            scrollbarHandle.color = hasInvites ? scrollbarVerticalOriginalColor : inviseColor;
+        }
 
         #region Lobby
 

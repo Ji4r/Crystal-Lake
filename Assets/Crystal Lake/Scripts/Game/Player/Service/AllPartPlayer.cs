@@ -7,6 +7,11 @@ namespace MyProj
 {
     public class AllPartPlayer : NetworkBehaviour
     {
+        [SerializeField] private Camera characterCamera;
+        [SerializeField] private Transform voiceChatParent;
+        public Camera CharacterCamera => characterCamera;
+        public Transform VoiceChatParent => voiceChatParent;
+
         private Dictionary<Type, IPartPlayer> partPlayer;
         
         private void Awake()

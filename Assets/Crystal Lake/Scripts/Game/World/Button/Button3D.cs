@@ -1,30 +1,46 @@
 using Cysharp.Threading.Tasks;
+using Mirror;
+using System;
 using UnityEngine;
 using UnityEngine.Events;
+using TriInspector;
 
 namespace MyProj
 {
-    public class Button3D : MonoBehaviour, IInteractible
+    [DrawWithTriInspector]
+    public class Button3D : NetworkBehaviour, IInteractible
     {
         [SerializeField] private ScriptableButton3D preset;
+
+        private static object FixMaterial()
+        {
+            throw new NotImplementedException();
+        }
+
         [SerializeField] private Direction pressDirection = Direction.Backward;
-        [SerializeField] private Collider btnColider;
-        [SerializeField, Tooltip("Одноразовая")] private bool IsDisposable = false;
-        [SerializeField, Tooltip("Только нажать")] private bool onlyPress = false;
+        [SerializeField] private Collider btnCollider;
+        [SerializeField, Tooltip("Одноразовая кнопка")]
+        private bool isDisposable = false;
+        [SerializeField, Tooltip("Остаётся нажатой навсегда")]
+        private bool onlyPress = false;
 
         public UnityEvent OnPressed;
         public UnityEvent OnReleased;
 
         private Vector3 basePosition;
-        private Transform thisTransform;
+        private Transform cachedTransform;
         private Button3DAnimator animator;
-        private bool isPressed = false;
-        private bool isLocked = false;
+
+        [SyncVar(hook = nameof(OnPressedStateChanged))]
+        private bool isPressed;
+
+        [SyncVar]
+        private bool isLocked;
 
         private void Start()
         {
-            thisTransform = transform;
-            basePosition = thisTransform.localPosition;
+            cachedTransform = transform;
+            basePosition = cachedTransform.localPosition;
             animator = new Button3DAnimator(preset);
         }
 
@@ -35,56 +51,67 @@ namespace MyProj
 
         public void Interact(RaycastHit hit, AllPartPlayer allPartPlayer)
         {
+            CmdPressButton();
+        }
+
+        [Command(requiresAuthority = false)]
+        private void CmdPressButton()
+        {
             if (isPressed || isLocked)
                 return;
 
-            if (onlyPress)
-                InteractOnlyPressAsync(hit).Forget();
-            else
-                InteractAsync(hit).Forget();
-        }
+            isPressed = true;
 
-        private async UniTask InteractAsync(RaycastHit hit)
-        {
-            try
-            {
-                LockButton();
-
-                isPressed = true;
-                await animator.AnimatePress(thisTransform, pressDirection);
-                OnPressed?.Invoke();
-                await animator.AnimateRelease(thisTransform, basePosition);
-                OnReleased?.Invoke();
-            }
-            finally 
-            {
-                isPressed = false;
-            }
-        }
-
-        private async UniTask InteractOnlyPressAsync(RaycastHit hit)
-        {
-            try
-            {
-                LockButton();
-
-                isPressed = true;
-                await animator.AnimatePress(thisTransform, pressDirection);
-                OnPressed?.Invoke();
-            }
-            finally
-            {
-                isPressed = false;
-            }
-        }
-
-        private void LockButton()
-        {
-            if (IsDisposable || onlyPress)
+            if (isDisposable || onlyPress)
             {
                 isLocked = true;
-                btnColider.enabled = false;
+
+                if (btnCollider != null)
+                    btnCollider.enabled = false;
             }
+
+            // Игровая логика выполняется только на сервере
+            OnPressed?.Invoke();
+
+            if (!onlyPress)
+            {
+                ReleaseRoutine().Forget();
+            }
+        }
+
+        [Server]
+        private async UniTaskVoid ReleaseRoutine()
+        {
+            await UniTask.Delay(
+                TimeSpan.FromSeconds(preset.PressDepth));
+
+            isPressed = false;
+
+            OnReleased?.Invoke();
+        }
+
+        private void OnPressedStateChanged(bool oldValue, bool newValue)
+        {
+            if (newValue)
+            {
+                AnimatePress().Forget();
+            }
+            else
+            {
+                AnimateRelease().Forget();
+            }
+        }
+
+        private async UniTask AnimatePress()
+        {
+            await animator.AnimatePress(cachedTransform,pressDirection);
+        }
+
+        private async UniTask AnimateRelease()
+        {
+            await animator.AnimateRelease(
+                cachedTransform,
+                basePosition);
         }
     }
 }

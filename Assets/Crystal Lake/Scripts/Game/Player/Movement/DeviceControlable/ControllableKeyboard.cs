@@ -45,6 +45,7 @@ namespace MyProj
             inputSystem.Gameplay._3Slot.performed += _3SlotPerformed;
             inputSystem.Gameplay._4Slot.performed += _4SlotPerformed;
             inputSystem.Gameplay.Flashlight.performed += UseFlashlightPerformed;
+            inputSystem.Gameplay.MenuAnims.performed += MenuAnimsPerformed;
         }
 
         private void OnDisable()
@@ -65,6 +66,7 @@ namespace MyProj
             inputSystem.Gameplay._2Slot.performed -= _2SlotPerformed;
             inputSystem.Gameplay._3Slot.performed -= _3SlotPerformed;
             inputSystem.Gameplay._4Slot.performed -= _4SlotPerformed;
+            inputSystem.Gameplay.MenuAnims.performed -= MenuAnimsPerformed;
         }
 
         private void OnDestroy()
@@ -186,6 +188,11 @@ namespace MyProj
         public void ExitPerformed(InputAction.CallbackContext obj)
         {
             controllable.Exit();
+        }
+
+        private void MenuAnimsPerformed(InputAction.CallbackContext context)
+        {
+            controllable.TabAnitimation();
         }
     }
 }

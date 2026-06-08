@@ -135,6 +135,7 @@ namespace MyProj
             }
             else
             {
+                animator.CancelEmotion();
                 velocity.y += gravity * Time.deltaTime;
             }
 

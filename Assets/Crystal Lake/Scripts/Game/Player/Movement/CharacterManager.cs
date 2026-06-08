@@ -23,6 +23,7 @@ namespace MyProj
         private HandController handController;
         private Flashlight flashlight;
         private UseProp useProp;
+        private CircularAnimationMenu circularAnimationMenu;
 
         private IInteractible interactibleObject;
         private RaycastHit hitInfo;
@@ -43,6 +44,7 @@ namespace MyProj
             inventoryData = allPartPlayer.Get<InventoryData>();
             inventoryState = allPartPlayer.Get<InventoryState>();
             handController = allPartPlayer.Get<HandController>();
+            circularAnimationMenu = allPartPlayer.Get<CircularAnimationMenu>();
         }
 
         public void LocalDissable()
@@ -154,6 +156,11 @@ namespace MyProj
             flashlight.UseFlashlight();
         }
 
+        public void TabAnitimation()
+        {
+            circularAnimationMenu.OpenTabCircle();
+        }
+
         [Command]
         private void CmdPickupItem(NetworkIdentity itemIdentity)
         {
@@ -177,19 +184,9 @@ namespace MyProj
             }
 
             itemIdentity.transform.SetParent(handController.handPoint);
-            item.HideVisual();
-
-            //bool isActiveSlot = slot == inventoryState.ActiveSlot;
-
-            //if (isActiveSlot)
-            //{
-            //    inventoryState.ActiveItemNetId = itemIdentity.netId;
-            //}
-            //else
-            //{
-            //    item.RpcSetVisible(false);
-            //}
+            item.HideVisual();        
         }
+
 
         [Command]
         private void CmdDropItem(Vector3 dropPosition, Vector3 throwDirection, float throwForce)
