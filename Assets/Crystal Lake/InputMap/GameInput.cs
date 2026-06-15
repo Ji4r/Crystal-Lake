@@ -217,6 +217,15 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MenuAnims"",
+                    ""type"": ""Button"",
+                    ""id"": ""aac91157-4b72-4a32-b64a-fdde8cc4f32e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -483,6 +492,17 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
                     ""action"": ""UseProp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""884244e8-3808-4e1f-80d4-2fe0096bd8e6"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MenuAnims"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -550,6 +570,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         m_Gameplay__4Slot = m_Gameplay.FindAction("4Slot", throwIfNotFound: true);
         m_Gameplay_Look = m_Gameplay.FindAction("Look", throwIfNotFound: true);
         m_Gameplay_UseProp = m_Gameplay.FindAction("UseProp", throwIfNotFound: true);
+        m_Gameplay_MenuAnims = m_Gameplay.FindAction("MenuAnims", throwIfNotFound: true);
         // Ui
         m_Ui = asset.FindActionMap("Ui", throwIfNotFound: true);
         m_Ui_Exit = m_Ui.FindAction("Exit", throwIfNotFound: true);
@@ -648,6 +669,7 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay__4Slot;
     private readonly InputAction m_Gameplay_Look;
     private readonly InputAction m_Gameplay_UseProp;
+    private readonly InputAction m_Gameplay_MenuAnims;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -716,6 +738,10 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @UseProp => m_Wrapper.m_Gameplay_UseProp;
         /// <summary>
+        /// Provides access to the underlying input action "Gameplay/MenuAnims".
+        /// </summary>
+        public InputAction @MenuAnims => m_Wrapper.m_Gameplay_MenuAnims;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
@@ -783,6 +809,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @UseProp.started += instance.OnUseProp;
             @UseProp.performed += instance.OnUseProp;
             @UseProp.canceled += instance.OnUseProp;
+            @MenuAnims.started += instance.OnMenuAnims;
+            @MenuAnims.performed += instance.OnMenuAnims;
+            @MenuAnims.canceled += instance.OnMenuAnims;
         }
 
         /// <summary>
@@ -836,6 +865,9 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
             @UseProp.started -= instance.OnUseProp;
             @UseProp.performed -= instance.OnUseProp;
             @UseProp.canceled -= instance.OnUseProp;
+            @MenuAnims.started -= instance.OnMenuAnims;
+            @MenuAnims.performed -= instance.OnMenuAnims;
+            @MenuAnims.canceled -= instance.OnMenuAnims;
         }
 
         /// <summary>
@@ -1083,6 +1115,13 @@ public partial class @GameInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnUseProp(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "MenuAnims" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMenuAnims(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Ui" which allows adding and removing callbacks.

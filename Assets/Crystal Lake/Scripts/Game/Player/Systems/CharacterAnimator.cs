@@ -1,3 +1,4 @@
+using Mirror;
 using UnityEngine;
 
 namespace MyProj
@@ -5,6 +6,9 @@ namespace MyProj
     public class CharacterAnimator : MonoBehaviour, ILocalOnly
     {
         [SerializeField] private Animator animator;
+        private bool lastCrouchState;
+
+        [SerializeField] private NetworkAnimator networkAnimator;
 
         public void SetSpeed(Vector2 moveSpeed)
         {
@@ -19,12 +23,37 @@ namespace MyProj
 
         public void SetJump()
         {
+            CancelEmotion();
             animator.SetTrigger("_jump");
         }
 
         public void SetCrouch(bool isCrouching)
         {
+            if (lastCrouchState != isCrouching)
+            {
+                if (isCrouching)
+                    CancelEmotion();
+
+                lastCrouchState = isCrouching;
+            }
+
             animator.SetBool("_isCrouch", isCrouching);
+        }
+
+
+        public void SetTabAnims(string name)
+        {
+
+            animator.ResetTrigger("_cancelEmotion");
+
+
+            networkAnimator.SetTrigger(name);
+            //animator.SetTrigger(name);
+        }
+
+        public void CancelEmotion()
+        {
+            animator.SetTrigger("_cancelEmotion");
         }
 
         public void LocalDissable()

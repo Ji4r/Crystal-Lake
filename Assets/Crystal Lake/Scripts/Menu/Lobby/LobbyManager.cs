@@ -24,6 +24,8 @@ namespace MyProj
         public static CSteamID CurrentLobbyID { get; private set; }
 
         public event Action OnLobbyUpdated;
+        public event Action<CSteamID> OnInviteReceived;
+        public event Action<CSteamID, CSteamID> OnLobbyInviteReceived;
 
         private const string HostAddressKey = "HostAddress";
 
@@ -31,6 +33,7 @@ namespace MyProj
         private Callback<GameLobbyJoinRequested_t> lobbyJoinRequestedCallback;
         private Callback<LobbyEnter_t> lobbyEnterCallback;
         private Callback<LobbyChatUpdate_t> lobbyChatUpdateCallback;
+        private Callback<LobbyInvite_t> lobbyInviteCallback;
 
         [Inject] private MyNetworkManager myNetworkManager;
 
@@ -40,6 +43,7 @@ namespace MyProj
             lobbyJoinRequestedCallback = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequest);
             lobbyEnterCallback = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
             lobbyChatUpdateCallback = Callback<LobbyChatUpdate_t>.Create(OnLobbyChatUpdate);
+            lobbyInviteCallback = Callback<LobbyInvite_t>.Create(OnLobbyInvite);
         }
 
         #region Public
@@ -49,6 +53,16 @@ namespace MyProj
             SteamMatchmaking.CreateLobby(
                 ELobbyType.k_ELobbyTypeFriendsOnly,
                 myNetworkManager.maxConnections
+            );
+        }
+
+        private void OnLobbyInvite(LobbyInvite_t callback)
+        {
+            Debug.Log($"Invite from {callback.m_ulSteamIDUser}");
+
+            OnLobbyInviteReceived?.Invoke(
+            new CSteamID(callback.m_ulSteamIDUser),
+            new CSteamID(callback.m_ulSteamIDLobby)
             );
         }
 

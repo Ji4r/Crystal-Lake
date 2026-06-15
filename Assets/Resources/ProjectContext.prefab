@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1320484414864843102}
   - component: {fileID: 1107463480979566439}
   - component: {fileID: 5740558969840658527}
+  - component: {fileID: 5148318196878941047}
   m_Layer: 0
   m_Name: ProjectContext
   m_TagString: Untagged
@@ -78,6 +79,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MyProj.ProjectRegistration
   steam: {fileID: 5740558969840658527}
   networkManager: {fileID: 2512603483459769312}
+  voiceSettings: {fileID: 11400000, guid: 98aa316cded59174495d72a833e62f40, type: 2}
 --- !u!114 &5740558969840658527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90,6 +92,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef4bffeda13d7a748973ff9204401c07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SteamManager
+--- !u!114 &5148318196878941047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2396410577055780261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffdfd5b342a49604099577e85ab11aad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MyProj.VoiceAudioConfigurator
+  attachDelay: 1
+  playerSearchRetryDelay: 0.5
+  playerSearchRetryCount: 5
 --- !u!1 &8834978971213362442
 GameObject:
   m_ObjectHideFlags: 0
@@ -103,6 +120,7 @@ GameObject:
   - component: {fileID: 5718107458598029751}
   - component: {fileID: 2039709782715259477}
   - component: {fileID: 1701902288494337525}
+  - component: {fileID: 2210206074965261646}
   m_Layer: 0
   m_Name: Networking
   m_TagString: Untagged
@@ -145,7 +163,7 @@ MonoBehaviour:
   offlineScene: Assets/Crystal Lake/Scenes/MainMenu.unity
   onlineScene: 
   offlineSceneLoadDelay: 0
-  transport: {fileID: 5718107458598029751}
+  transport: {fileID: 2039709782715259477}
   networkAddress: localhost
   maxConnections: 4
   disconnectInactiveConnections: 0
@@ -183,7 +201,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8834978971213362442}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e6e55fca1f4e4844593a3dd65a3ecb39, type: 3}
   m_Name: 
@@ -199,7 +217,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8834978971213362442}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b0fecffa3f624585964b0d0eb21b18e, type: 3}
   m_Name: 
@@ -228,10 +246,25 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8834978971213362442}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6442dc8070ceb41f094e44de0bf87274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Mirror::Mirror.NetworkManagerHUD
   offsetX: 0
   offsetY: 0
+--- !u!114 &2210206074965261646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8834978971213362442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0dec1d2df214b44f8cb106b071695ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Adrenak.UniVoice.Samples::Adrenak.UniVoice.Samples.UniVoiceMirrorSetupSample
+  useRNNoise4UnityIfAvailable: 1
+  useConcentusEncodeAndDecode: 1
+  useVad: 1

@@ -61,7 +61,7 @@ public class VoiceRecorderTest : NetworkBehaviour
 
         uint bytesWritten;
 
-        Debug.Log($"Available: {availableBytes}");
+        //Debug.Log($"Available: {availableBytes}");
         if (SteamUser.GetVoice(
             true,
             voiceBuffer,

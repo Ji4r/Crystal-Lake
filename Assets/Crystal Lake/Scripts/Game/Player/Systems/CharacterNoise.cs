@@ -2,6 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
+using Adrenak.UniVoice.Inputs;
 
 namespace MyProj
 {
@@ -24,15 +25,31 @@ namespace MyProj
         [SerializeField] private float noiseJump = 15;
         [SerializeField] private float noiseCrouch = 5;
 
+        private float lastVoiceNoiseTime;
+        private float voiceNoiseInterval;
+
         private Transform myTransform;
         private Dictionary<NoiseType, float> noiseRadiusDictionary;
 
         private float multipleNoise;
+        private VoiceSettings voiceSettings;
 
         [Inject]
-        public void Construct()
+        private void Construct(VoiceSettings settings)
         {
+            voiceSettings = settings;
+            voiceNoiseInterval = settings.NoiseInterval;
             multipleNoise = DifficultyGame.Instance.Current.PlayersNoiseMultiplier;
+        }
+
+        private void OnEnable()
+        {
+            UniMicInput.OnVoiceVolume += HandleVoiceVolume;
+        }
+
+        private void OnDisable()
+        {
+            UniMicInput.OnVoiceVolume -= HandleVoiceVolume;
         }
 
         private void Start()
@@ -50,6 +67,21 @@ namespace MyProj
                 { NoiseType.Jump, noiseJump * multipleNoise },
                 { NoiseType.Crouch, noiseCrouch * multipleNoise },
             };
+        }
+
+        private void HandleVoiceVolume(float volume)
+        {
+            if (!isLocalPlayer)
+                return;
+
+            if (Time.time - lastVoiceNoiseTime < voiceNoiseInterval)
+                return;
+
+            lastVoiceNoiseTime = Time.time;
+
+            float radius = Mathf.Clamp(volume * voiceSettings.NoiseMultiplier, voiceSettings.MinNoiseRadius, voiceSettings.MaxNoiseRadius);
+
+            CmdMakeVoiceNoise(radius);
         }
 
         public void MakeNoise(NoiseType noiseType)
@@ -76,6 +108,25 @@ namespace MyProj
                 if (hit.TryGetComponent<EnemySoundTrigger>(out var enemy))
                 {
                     enemy.EnterOnTrigger(myTransform.position);
+                }
+            }
+        }
+
+        [Command]
+        private void CmdMakeVoiceNoise(float radius)
+        {
+            currentDebugRadius = radius;
+
+            Collider[] hits = Physics.OverlapSphere(
+                transform.position,
+                radius,
+                enemyLayer);
+
+            foreach (var hit in hits)
+            {
+                if (hit.TryGetComponent<EnemySoundTrigger>(out var enemy))
+                {
+                    enemy.EnterOnTrigger(transform.position);
                 }
             }
         }

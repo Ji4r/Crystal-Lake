@@ -1,4 +1,5 @@
 using UnityEngine;
+using TriInspector;
 
 namespace MyProj
 {
@@ -11,8 +12,8 @@ namespace MyProj
     {
         [SerializeField] private string nameItem;
         [SerializeField] private string description;
-        [SerializeField] private GameObject prefab;
-        [SerializeField] private Sprite icon;
+        [SerializeField, PreviewObject(Height = 100)] private GameObject prefab;
+        [SerializeField, PreviewObject(Height = 100)] private Sprite icon;
         [Header("Настройка предмета в руке")]
         [SerializeField] private int defaultLayer = 0; // default
         [SerializeField] private int setLayerOnHandle = 8; // Hand

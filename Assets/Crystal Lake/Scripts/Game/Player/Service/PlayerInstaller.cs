@@ -14,8 +14,7 @@ namespace MyProj
 
             injected = true;
 
-            ProjectContext.Instance.Container
-                .InjectGameObject(gameObject);
+            ProjectContext.Instance.Container.InjectGameObject(gameObject);
         }
     }
 }

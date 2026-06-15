@@ -1,4 +1,5 @@
 using TMPro;
+using TriInspector;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,24 +9,28 @@ namespace MyProj
     {
         [SerializeField] private GameObject canvas;
         [SerializeField] private AllPartPlayer allPartPlayer;
-        [Header("StaminaBar")]
+        [Title("StaminaBar")]
         [SerializeField] private StaminaController staminaController;
         [SerializeField] private Image leftStaminaImg;
         [SerializeField] private Image rightStaminaImg;
         [SerializeField] private float durationHideStaminaBar = 1f;
 
-        [Header("Window")]
+        [Title("Window")]
         [SerializeField] private GameObject voiceVolume;
         [SerializeField] private GameObject staminaLevel;
         [SerializeField] private GameObject batteryPercentage;
 
-        [Header("Ui Elements")]
+        [Title("Ui Elements")]
         [SerializeField] private TextMeshProUGUI batteryPercentageText;
         [SerializeField] private Image batteryfieldImage;
 
-        [Header("Notes")]
+        [Title("Notes")]
         [SerializeField] private GameObject notesWindow;
         [SerializeField] private TextMeshProUGUI notesText;
+
+        [Title("Tab Circle")]
+        [Required(Message = "Set reference to the menu object"), SerializeField]
+        private GameObject tabAnimationWindow;
 
         private Flashlight flashlight;
         private CharacterManager characterManager;
@@ -80,7 +85,6 @@ namespace MyProj
             notesText.text = text;
             ShowWindow(notesWindow);
         }
-
         public void HideNotes()
         {
             HideWindow();
@@ -89,6 +93,16 @@ namespace MyProj
         public void UpdateTextNotes(string text)
         {
             notesText.text = text;
+        }
+        
+        public void ShowTabCircle()
+        {
+            ShowWindow(tabAnimationWindow);
+        }
+
+        public void HideTabCircle()
+        {
+            HideWindow();
         }
 
         public void Exit()
@@ -108,6 +122,9 @@ namespace MyProj
 
         private void HideWindow()
         {
+            if (currentWindow == null)
+                return;
+
             currentWindow.SetActive(false);
             currentWindow = null;
 

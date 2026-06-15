@@ -2,10 +2,11 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using Mirror;
 
 namespace MyProj
 {
-    public class ContactTrigger : MonoBehaviour
+    public class ContactTrigger : NetworkBehaviour
     {
         [SerializeField]
         private string contactTag = "Player";
@@ -19,8 +20,8 @@ namespace MyProj
 
         private Coroutine coroutineEnter;
         private Coroutine coroutineExit;
-        private bool onCallEnter;
-        private bool onCallExit;
+        [SyncVar] private bool onCallEnter;
+        [SyncVar] private bool onCallExit;
 
         private void OnDisable()
         {
@@ -38,6 +39,9 @@ namespace MyProj
 
         private void OnTriggerEnter(Collider other)
         {
+            if (!isServer)
+                return;
+
             Debug.Log($"ContactTrigger: OnTriggerEnter with {other.tag}");
             if (!other.CompareTag(contactTag))
                 return;
@@ -53,6 +57,9 @@ namespace MyProj
 
         private void OnTriggerExit(Collider other)
         {
+            if (!isServer)
+                return;
+
             if (!other.CompareTag(contactTag))
                 return;
 
@@ -65,8 +72,7 @@ namespace MyProj
                 () => coroutineExit = null));
         }
 
-        private IEnumerator CallWithDelay(float delay, UnityEvent unityEvent, bool isDisposable,
-                                            Action setDisposable, Action clearCoroutine)
+        private IEnumerator CallWithDelay(float delay, UnityEvent unityEvent, bool isDisposable, Action setDisposable, Action clearCoroutine)
         {
             yield return new WaitForSeconds(delay);
 

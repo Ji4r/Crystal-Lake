@@ -14,6 +14,7 @@ namespace MyProj
         public void UseProp();
         public void UseFlashlight();
         public void Exit();
+        public void TabAnitimation();
         public void SwitchSlot1();
         public void SwitchSlot2();
         public void SwitchSlot3();

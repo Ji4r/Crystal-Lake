@@ -1,13 +1,13 @@
 using System;
 using UnityEngine;
+using TriInspector;
 
 namespace MyProj
 {
     [CreateAssetMenu(fileName = "DifficultyGameData", menuName = "SO/DifficultyGameData")]
     public class DifficultyGameData : ScriptableObject
     {
-        [Header("Difficulty Settings")]
-        [Header("===================")]
+        [Title("Difficulty Settings")]
 
         [Header("Spawn prop"), Space(2)]
         [SerializeField, Range(0, 100), Tooltip("Процент спавна хилок")]
