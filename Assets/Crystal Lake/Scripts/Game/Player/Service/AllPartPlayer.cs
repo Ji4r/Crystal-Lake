@@ -7,13 +7,23 @@ namespace MyProj
 {
     public class AllPartPlayer : NetworkBehaviour
     {
+        public static readonly List<AllPartPlayer> Players = new();
+
         [SerializeField] private Camera characterCamera;
+        [SerializeField] private AudioListener audioListener;
         [SerializeField] private Transform voiceChatParent;
         public Camera CharacterCamera => characterCamera;
+        public AudioListener AudioListener => audioListener;
         public Transform VoiceChatParent => voiceChatParent;
 
         private Dictionary<Type, IPartPlayer> partPlayer;
-        
+
+        public override void OnStopClient()
+        {
+            Players.Remove(this);
+        }
+
+
         private void Awake()
         {
             partPlayer = new Dictionary<Type, IPartPlayer>();
@@ -31,6 +41,7 @@ namespace MyProj
 
         public override void OnStartClient()
         {
+            Players.Add(this);
             if (isLocalPlayer) return;
 
             foreach (var part in partPlayer.Values)
@@ -49,6 +60,17 @@ namespace MyProj
 
             Debug.LogWarning($"Такой тип не найден - {typeof(T)}");
             return null;
+        }
+
+        public List<T> GetAll<T>() where T : class, IPartPlayer
+        {
+            var result = new List<T>(partPlayer.Values.Count);
+            foreach (var part in partPlayer.Values)
+            {
+                if (part is T t)
+                    result.Add(t);
+            }
+            return result;
         }
     }
 }

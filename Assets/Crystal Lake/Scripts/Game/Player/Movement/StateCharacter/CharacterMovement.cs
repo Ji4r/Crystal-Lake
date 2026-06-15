@@ -55,21 +55,6 @@ namespace MyProj
         private float transitionIdleToWalk;
         private float transitionWalkToRun;
 
-
-        [Inject]
-        public void Construct()
-        {
-        }
-
-        //[Inject]
-        //public void Construct()
-        //{
-        //    Debug.Log($"1");
-        //    transitionIdleToWalk = DifficultyGame.Instance.Current.TransitionBetweenIdlAndWlking;
-        //    transitionWalkToRun = DifficultyGame.Instance.Current.TransitionBetweenWalkingAndRunning;
-        //    Debug.Log($"transitionIdleToWalk - {transitionIdleToWalk}, transitionWalkToRun - {transitionWalkToRun}");
-        //}
-
         private void Awake()
         {
             ApplyDifficulty();

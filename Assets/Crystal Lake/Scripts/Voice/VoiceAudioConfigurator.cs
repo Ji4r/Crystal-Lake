@@ -3,11 +3,26 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using Zenject;
 
 namespace MyProj
 {
     public class VoiceAudioConfigurator : MonoBehaviour
     {
+        [SerializeField] private float attachDelay = 1f;
+        [SerializeField] private float playerSearchRetryDelay = 0.5f;
+        [SerializeField] private int playerSearchRetryCount = 5;
+
+        private VoiceSettings settings;
+
+        [Inject]
+        private void Construct(VoiceSettings settings)
+        {
+            this.settings = settings;
+            Debug.Log("VoiceAudioConfigurator constructed with settings");
+            Debug.Log($"MinDistance: {settings.MinDistance}, MaxDistance: {settings.MaxDistance}, SpatialBlendInMenu: {settings.SpatialBlendInMenu}, SpatialBlendInGame: {settings.SpatialBlendInGame}");
+        }
+
         private void OnEnable()
         {
             Debug.Log("VoiceAudioConfigurator enabled");
@@ -21,22 +36,26 @@ namespace MyProj
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
+        private void ApplyGameAudioSettings(AudioSource audio)
+        {
+            audio.spatialBlend = settings.SpatialBlendInGame;
+            audio.rolloffMode = settings.RolloffMode;
+            audio.minDistance = settings.MinDistance;
+            audio.maxDistance = settings.MaxDistance;
+            audio.dopplerLevel = settings.DopplerLevel;
+        }
+
         private void HandleVoiceCreated(StreamedAudioSourceOutput voice)
         {
-            Debug.Log("VOICE CREATED EVENT");
             var audio = voice.Stream.UnityAudioSource;
 
             if (SceneManager.GetActiveScene().name == SceneName.MENU)
             {
-                audio.spatialBlend = 0f;
+                audio.spatialBlend = settings.SpatialBlendInMenu;
             }
             else
             {
-                audio.spatialBlend = 1f;
-                audio.rolloffMode = AudioRolloffMode.Linear;
-                audio.minDistance = 3f;
-                audio.maxDistance = 20f;
-                audio.dopplerLevel = 0f;
+                ApplyGameAudioSettings(audio);
             }
 
             var player = FindObjectsByType<NetworkVoiceIdentity>(FindObjectsSortMode.None).FirstOrDefault(x => x.PeerId == voice.PeerId);
@@ -45,26 +64,17 @@ namespace MyProj
                 Debug.Log("PLAYER NOT FOUND, RETRYING...");
                 StartCoroutine(FindPlayerLater(voice));
             }
-
-            Debug.Log($"SpatialBlend = {audio.spatialBlend}");
-            Debug.Log($"Scene = {SceneManager.GetActiveScene().name}");
-            Debug.Log(voice.name);
-            Debug.Log(voice.transform.position);
-            Debug.Log($"Voice for peer {voice.PeerId}");
-            Debug.Log($"FOUND PLAYER = {player != null}");
-
         }
 
         private IEnumerator FindPlayerLater(StreamedAudioSourceOutput voice)
         {
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < playerSearchRetryCount; i++)
             {
-                yield return new WaitForSeconds(0.5f);
+                yield return new WaitForSeconds(playerSearchRetryDelay);
 
                 var player = FindObjectsByType<NetworkVoiceIdentity>(FindObjectsSortMode.None).FirstOrDefault(x => x.PeerId == voice.PeerId);
 
-                var players = FindObjectsByType<NetworkVoiceIdentity>(
-    FindObjectsSortMode.None);
+                var players = FindObjectsByType<NetworkVoiceIdentity>(FindObjectsSortMode.None);
 
                 foreach (var p in players)
                 {
@@ -91,10 +101,9 @@ namespace MyProj
 
         private IEnumerator AttachAllVoices()
         {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(attachDelay);
 
-            var voices = FindObjectsByType<StreamedAudioSourceOutput>(
-                FindObjectsSortMode.None);
+            var voices = FindObjectsByType<StreamedAudioSourceOutput>(FindObjectsSortMode.None);
 
             foreach (var voice in voices)
             {
@@ -104,9 +113,7 @@ namespace MyProj
 
         private void AttachVoiceToPlayer(StreamedAudioSourceOutput voice)
         {
-            var player = FindObjectsByType<NetworkVoiceIdentity>(
-                FindObjectsSortMode.None)
-                .FirstOrDefault(x => x.PeerId == voice.PeerId);
+            var player = FindObjectsByType<NetworkVoiceIdentity>(FindObjectsSortMode.None).FirstOrDefault(x => x.PeerId == voice.PeerId);
 
             if (player == null)
             {
@@ -133,14 +140,15 @@ namespace MyProj
             voice.transform.SetParent(voiceChat);
             voice.transform.localPosition = Vector3.zero;
             voice.transform.localRotation = Quaternion.identity;
+            if (voice.GetComponent<VoiceOcclusion>() == null)
+            {
+                var occlusion = voice.gameObject.AddComponent<VoiceOcclusion>();
+
+                ProjectContext.Instance.Container.Inject(occlusion);
+            }
 
             var audio = voice.Stream.UnityAudioSource;
-
-            audio.spatialBlend = 1f;
-            audio.rolloffMode = AudioRolloffMode.Linear;
-            audio.minDistance = 3f;
-            audio.maxDistance = 20f;
-            audio.dopplerLevel = 0f;
+            ApplyGameAudioSettings(audio);
 
             Debug.Log($"VOICE ATTACHED TO PLAYER {player.PeerId}");
         }

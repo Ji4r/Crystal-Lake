@@ -82,7 +82,7 @@ namespace MyProj
 
         private void OnEnable()
         {
-            healthManager.OnDeath += PlayerOnDeath;
+            healthManager.OnDeathServer += PlayerOnDeath;
 
             characterMovement.ChangeStaminaAction += TryToWriteOffStamina;
             characterGravity.ChangeStaminaAction += TryToWriteOffStamina;
@@ -90,7 +90,7 @@ namespace MyProj
 
         private void OnDisable()
         {
-            healthManager.OnDeath -= PlayerOnDeath;
+            healthManager.OnDeathServer -= PlayerOnDeath;
 
             characterMovement.ChangeStaminaAction -= TryToWriteOffStamina;
             characterGravity.ChangeStaminaAction -= TryToWriteOffStamina;

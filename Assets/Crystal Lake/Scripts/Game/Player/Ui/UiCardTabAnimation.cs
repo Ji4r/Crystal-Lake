@@ -18,7 +18,6 @@ namespace MyProj
         
         public void AddActionOnButton(Action<string> action, string parameter)
         {
-            Debug.Log("Add action on button " + parameter);
             button.onClick.AddListener(() => action.Invoke(parameter));
         }
 

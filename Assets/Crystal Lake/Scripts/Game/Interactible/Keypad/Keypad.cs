@@ -85,6 +85,12 @@ namespace MyProj
             }
             userInput += value;
             DisplayText.text = userInput;
+
+            if (userInput.Length >= 6) 
+            {
+                CheckPassword(); 
+                return;
+            }
         }
 
         [ClientRpc]

@@ -22,7 +22,7 @@ namespace MyProj
         void Awake()
         {
             audioListener.enabled = false;
-            cameraPlayer.gameObject.SetActive(false);
+            cameraPlayer.enabled = false;
             cameraTrans = cameraPlayer.transform;
             SetStateCursor(false);
         }
@@ -36,7 +36,7 @@ namespace MyProj
             else
             {
                 audioListener.enabled = true;
-                cameraPlayer.gameObject.SetActive(true);
+                cameraPlayer.enabled = true;
             }
         }
 
@@ -65,7 +65,7 @@ namespace MyProj
         public void LocalDissable()
         {
             audioListener.enabled = false;
-            cameraPlayer.gameObject.SetActive(false);
+            cameraPlayer.enabled = false;
             this.enabled = false;
         }
     }
