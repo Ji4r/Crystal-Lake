@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e6f3a8def75fb4aa38297fb62d093a, type: 3}
   m_Name: Nightmare
   m_EditorClassIdentifier: Assembly-CSharp::MyProj.DifficultyGameData
-  percentageOfSpawnHigh: 30
-  percentageOfBatterySpawn: 30
-  percentageOfSpawnAuxiliaryItems: 30
+  maxPercentageOfSpawn: 100
+  percentageOfSpawnHigh: 20
+  percentageOfBatterySpawn: 20
+  percentageOfSpawnAuxiliaryItems: 20
   isEnabledAlways: 0
   countNotesForKeypad:
     minValue: 1

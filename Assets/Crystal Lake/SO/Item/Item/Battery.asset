@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e3c6dda9dcf77f24cb09b8d33426a99d, type: 3}
-  m_Name: Cube
+  m_Name: Battery
   m_EditorClassIdentifier: Assembly-CSharp::MyProj.ItemScriptebleObject
   nameItem: Item
-  description: 1
-  prefab: {fileID: 2945506108923532244, guid: f3e1f645404f125429e179affe294381, type: 3}
-  icon: {fileID: 21300000, guid: 13ba34da9011744c884f459ce4699444, type: 3}
+  description: 
+  prefab: {fileID: 5775484429242647211, guid: 479596bac0851b847827f93300914cf6, type: 3}
+  icon: {fileID: 21300000, guid: 25dbbf4ad3fcbc24cb43386b31447311, type: 3}
   defaultLayer: 0
   setLayerOnHandle: 8
   position: {x: -0.14, y: 0, z: -0.17}

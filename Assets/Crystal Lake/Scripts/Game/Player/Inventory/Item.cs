@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace MyProj
 {
+    [System.Serializable]
     [RequireComponent(typeof(Rigidbody), typeof(NetworkTransformReliable))]
     public abstract class Item : NetworkBehaviour, IInteractible
     {

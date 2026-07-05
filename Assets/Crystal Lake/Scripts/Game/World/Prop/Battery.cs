@@ -8,13 +8,12 @@ namespace MyProj
         [Header("Настройки батареи")]
         [SerializeField] private int batteryLevelToAdd = 20;
 
-        public override void Use(Camera gameCamera, NetworkIdentity player)
+        public override void Use(Camera gameCamera, AllPartPlayer player)
         {
             if (ItemWasUsed)
                 return;
 
-            var allPartPlayer = player.GetComponent<AllPartPlayer>();
-            var flashlight = allPartPlayer.Get<Flashlight>();
+            var flashlight = player.Get<Flashlight>();
             flashlight.AddBatteryLevel(batteryLevelToAdd);
 
 
@@ -22,7 +21,7 @@ namespace MyProj
             {
                 ItemWasUsed = true;
 
-                var characterManager = allPartPlayer.Get<CharacterManager>();
+                var characterManager = player.Get<CharacterManager>();
                 characterManager.CmdConsumeActiveItem();
             }
         }

@@ -10,14 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e3c6dda9dcf77f24cb09b8d33426a99d, type: 3}
-  m_Name: Battery
+  m_Name: Beer
   m_EditorClassIdentifier: Assembly-CSharp::MyProj.ItemScriptebleObject
-  nameItem: Item
-  description: 1
-  prefab: {fileID: 5775484429242647211, guid: 479596bac0851b847827f93300914cf6, type: 3}
-  icon: {fileID: 21300000, guid: 25dbbf4ad3fcbc24cb43386b31447311, type: 3}
+  id: 1
+  nameItem: Cigarette pack
+  description: 
+  prefab: {fileID: 1801476337929307374, guid: 7f123b78e97258541a23f305b1fe9b1b, type: 3}
+  icon: {fileID: 1685398925, guid: 8d68360bb3699524abbcb5fc61741ab8, type: 3}
   defaultLayer: 0
   setLayerOnHandle: 8
-  position: {x: -0.14, y: 0, z: -0.17}
-  rotation: {x: 0, y: 0, z: 0}
-  scale: {x: 0.3, y: 0.3, z: 0.3}
+  position: {x: 2.842171e-16, y: 0.0298, z: -0.1207}
+  rotation: {x: -208.731, y: -18.28799, z: 82.613}
+  scale: {x: 0.5, y: 0.5, z: 0.5}

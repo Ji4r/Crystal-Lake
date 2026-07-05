@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 
 namespace MyProj
 {
@@ -15,8 +16,7 @@ namespace MyProj
             listEffects = new();
         }
 
-
-        public void StartEffects<T>(Func<T> factory) where T : Effect
+        public void AddEffects<T>(Func<T> factory) where T : Effect
         {
             var effect = factory();
 
@@ -24,26 +24,34 @@ namespace MyProj
 
             if (listEffects.TryGetValue(type, out var foundEffect))
             {
-                foundEffect.AddEffectTime();
+                foundEffect.AddDurationTimeEffect(effect.DurationEffect).Forget();
                 return;
             }
 
             listEffects.Add(type, effect);
-            effect.EnableEffect();
+            effect.EnableEffect().Forget();
         }
 
-        public void DisableEffect<T>() where T : Effect
+        public void DeleteEffect<T>() where T : Effect
         {
-            var type = typeof(T);
+            DeleteEffect(typeof(T));
+        }
 
+        public void DeleteEffect(Effect effect)
+        {
+            DeleteEffect(effect.GetType());
+        }
+
+        private void DeleteEffect(Type type)
+        {
             if (listEffects.TryGetValue(type, out var effect))
             {
-                effect.DissableEffect();
+                effect.Dispose();
                 listEffects.Remove(type);
                 return;
             }
 
-            throw new Exception($"Эффект - {type} не найден");
+            throw new Exception($"Эффект {type} не найден");
         }
     }
 }

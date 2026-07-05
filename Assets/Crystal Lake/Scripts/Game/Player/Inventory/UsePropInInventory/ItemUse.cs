@@ -12,14 +12,15 @@ namespace MyProj
         public bool ItemWasUsed { get; protected set; } // Предмет был использован
 
 
-        private void Start()
+        protected virtual void Start()
         {
             ItemWasUsed = false;
         }
 
-        public virtual void Use(Camera gameCamera, NetworkIdentity player)
+        public virtual void Use(Camera gameCamera, AllPartPlayer player)
         {
             Debug.Log("Use item");
+            throw new System.NotImplementedException();
         }
     }
 }

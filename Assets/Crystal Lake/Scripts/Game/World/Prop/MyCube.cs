@@ -5,7 +5,7 @@ namespace MyProj
 {
     public class MyCube : ItemUse
     {
-        public override void Use(Camera gameCamera, NetworkIdentity player)
+        public override void Use(Camera gameCamera, AllPartPlayer player)
         {
            
         }

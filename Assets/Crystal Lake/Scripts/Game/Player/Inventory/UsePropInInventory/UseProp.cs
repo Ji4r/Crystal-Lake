@@ -25,7 +25,7 @@ namespace MyProj
 
             if (gameObj.TryGetComponent<ItemUse>(out var iUseProp))
             {
-                iUseProp.Use(gameCamera, thisPlayer);
+                iUseProp.Use(gameCamera, allPartPlayer);
             }
         }
 

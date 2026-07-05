@@ -78,7 +78,7 @@ namespace MyProj
             if (playersInGame.Count == 0)
                 return;
 
-            Debug.Log("БОльше 0");
+            Debug.Log("Больше 0");
 
             currentSpectatingIndex = (sbyte)((currentSpectatingIndex + 1) % playersInGame.Count);
 

@@ -12,6 +12,8 @@ namespace MyProj
         Walk,
         Run,
         Jump,
+        Burp, // Отрыжка
+        Cough // Кашель
     }
 
     public class CharacterNoise : NetworkBehaviour, IPartPlayer
@@ -24,6 +26,8 @@ namespace MyProj
         [SerializeField] private float noiseRun = 10;
         [SerializeField] private float noiseJump = 15;
         [SerializeField] private float noiseCrouch = 5;
+        [SerializeField] private float noiseBurp = 10;
+        [SerializeField] private float noiseCough = 6;
 
         private float lastVoiceNoiseTime;
         private float voiceNoiseInterval;
@@ -66,6 +70,8 @@ namespace MyProj
                 { NoiseType.Run, noiseRun * multipleNoise },
                 { NoiseType.Jump, noiseJump * multipleNoise },
                 { NoiseType.Crouch, noiseCrouch * multipleNoise },
+                { NoiseType.Burp, noiseBurp * multipleNoise },
+                { NoiseType.Cough, noiseCough * multipleNoise },
             };
         }
 
@@ -74,14 +80,14 @@ namespace MyProj
             if (!isLocalPlayer)
                 return;
 
-            if (Time.time - lastVoiceNoiseTime < voiceNoiseInterval)
-                return;
+            //if (Time.time - lastVoiceNoiseTime < voiceNoiseInterval)
+            //    return;
 
-            lastVoiceNoiseTime = Time.time;
+            //lastVoiceNoiseTime = Time.time;
 
-            float radius = Mathf.Clamp(volume * voiceSettings.NoiseMultiplier, voiceSettings.MinNoiseRadius, voiceSettings.MaxNoiseRadius);
+            //float radius = Mathf.Clamp(volume * voiceSettings.NoiseMultiplier, voiceSettings.MinNoiseRadius, voiceSettings.MaxNoiseRadius);
 
-            CmdMakeVoiceNoise(radius);
+            //CmdMakeVoiceNoise(radius);
         }
 
         public void MakeNoise(NoiseType noiseType)
@@ -95,6 +101,7 @@ namespace MyProj
         [Command]
         private void CmdMakeNoise(NoiseType noiseType)
         {
+            Debug.Log(noiseType);
             float radius = GetNoiseRadius(noiseType);
             currentDebugRadius = radius;
 
@@ -133,15 +140,12 @@ namespace MyProj
 
         public float GetNoiseRadius(NoiseType noiseType)
         {
-            if (noiseRadiusDictionary.TryGetValue(
-                    noiseType,
-                    out float radius))
+            if (noiseRadiusDictionary.TryGetValue(noiseType, out float radius))
             {
                 return radius;
             }
 
-            Debug.LogWarning(
-                $"NoiseType {noiseType} not found");
+            Debug.LogWarning($"NoiseType {noiseType} not found");
 
             return 0f;
         }

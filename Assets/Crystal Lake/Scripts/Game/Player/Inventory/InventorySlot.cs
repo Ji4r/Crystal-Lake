@@ -1,5 +1,5 @@
-using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MyProj
 {
@@ -27,8 +27,17 @@ namespace MyProj
             SetIcon(item == null ? null : item.Icon);
         }
 
+        public void ClearSlot()
+        {
+            SetItem(null);
+        }
+
         private void SetIcon(Sprite _icon = null)
         {
+            Debug.Log(item == null);
+            Debug.Log(item?.NameItem);
+            Debug.Log(item?.Icon);
+            Debug.Log(item?.Prefab);
             Icon.color = new Color(1, 1, 1, 1);
             if (_icon != null)
             {

@@ -6,18 +6,18 @@ namespace MyProj
 {
     public abstract class ShakeState : IDisposable
     {
-        protected Camera playerCamera;
+        protected Transform playerCamera;
         protected ScriptableShakeCamera preset;
         protected Tween currentShake;
 
         public bool isPlay;
         private float startLocalY; 
 
-        public ShakeState(Camera cam, ScriptableShakeCamera preset)
+        public ShakeState(Camera cam, ScriptableShakeCamera preset, float startLocalY)
         {
-            playerCamera = cam;
+            playerCamera = cam.transform;
             this.preset = preset;
-            startLocalY = playerCamera.transform.localPosition.y;
+            this.startLocalY = startLocalY;
         }
 
         public virtual void Dispose()
@@ -30,7 +30,7 @@ namespace MyProj
         public virtual void EnabledShake()
         {
             isPlay = true;
-            currentShake = playerCamera.transform.DOLocalMoveY(startLocalY + preset.Power, preset.Duration)
+            currentShake = playerCamera.DOLocalMoveY(startLocalY + preset.Power, preset.Duration)
                 .SetEase(Ease.InOutQuad)
                 .SetLoops(-1, LoopType.Yoyo);
 

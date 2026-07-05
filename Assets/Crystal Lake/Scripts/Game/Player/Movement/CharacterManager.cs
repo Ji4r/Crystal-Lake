@@ -223,8 +223,11 @@ namespace MyProj
             item.RpcDropItem();
         }
 
+        /// <summary>
+        /// Удоление предмета из инвентаря после его использования. Вызывается на сервере.
+        /// </summary>
         [Command]
-        public void CmdConsumeActiveItem()
+        public void CmdConsumeActiveItem() 
         {
             int slot = inventoryState.ActiveSlot;
 

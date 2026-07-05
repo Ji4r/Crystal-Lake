@@ -100,12 +100,12 @@ namespace MyProj
         {
             globalLight.enabled = newVal;
             volumetricAdditionalLight.enabled = newVal;
+            localLight.enabled = newVal;
             conusLight.SetActive(newVal);
 
             if (!isLocalPlayer)
                 return;
 
-             localLight.enabled = newVal;
 
             if (newVal)
             {
