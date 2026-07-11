@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "com.adrenak.univoice": "4.12.0",
     "com.codewriter.triinspector": "https://github.com/codewriter-packages/Tri-Inspector.git",
     "com.cqf.urpvolumetricfog": "https://github.com/CristianQiu/Unity-URP-Volumetric-Light.git",
     "com.unity.2d.sprite": "1.0.0",
@@ -57,11 +56,7 @@
       "name": "npmjs",
       "url": "https://registry.npmjs.org",
       "scopes": [
-        "com.npmjs",
-        "com.adrenak.univoice",
-        "com.adrenak.brw",
-        "com.adrenak.unimic",
-        "com.adrenak.concentus-unity"
+        "com.npmjs"
       ]
     }
   ]

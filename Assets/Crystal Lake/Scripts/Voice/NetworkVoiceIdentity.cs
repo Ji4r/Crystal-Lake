@@ -1,5 +1,5 @@
-using Adrenak.UniVoice;
-using Adrenak.UniVoice.Outputs;
+//using Adrenak.UniVoice;
+//using Adrenak.UniVoice.Outputs;
 using Mirror;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,20 +13,20 @@ namespace MyProj
 
         public override void OnStartLocalPlayer()
         {
-            if (VoiceRuntimeData.LocalPeerId != 0)
-            {
-                CmdSetPeerId(VoiceRuntimeData.LocalPeerId);
-            }
+            //if (VoiceRuntimeData.LocalPeerId != 0)
+            //{
+            //    CmdSetPeerId(VoiceRuntimeData.LocalPeerId);
+            //}
         }
 
         private void OnEnable()
         {
-            VoiceRuntimeData.OnPeerIdReceived += HandlePeerIdReceived;
+            //VoiceRuntimeData.OnPeerIdReceived += HandlePeerIdReceived;
         }
 
         private void OnDisable()
         {
-            VoiceRuntimeData.OnPeerIdReceived -= HandlePeerIdReceived;
+            //VoiceRuntimeData.OnPeerIdReceived -= HandlePeerIdReceived;
         }
 
         private void HandlePeerIdReceived(int peerId)

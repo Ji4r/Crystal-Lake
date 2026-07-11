@@ -2,7 +2,7 @@ using Mirror;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
-using Adrenak.UniVoice.Inputs;
+//using Adrenak.UniVoice.Inputs;
 
 namespace MyProj
 {
@@ -48,12 +48,12 @@ namespace MyProj
 
         private void OnEnable()
         {
-            UniMicInput.OnVoiceVolume += HandleVoiceVolume;
+            //UniMicInput.OnVoiceVolume += HandleVoiceVolume;
         }
 
         private void OnDisable()
         {
-            UniMicInput.OnVoiceVolume -= HandleVoiceVolume;
+            //UniMicInput.OnVoiceVolume -= HandleVoiceVolume;
         }
 
         private void Start()
