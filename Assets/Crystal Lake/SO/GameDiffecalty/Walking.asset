@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45e6f3a8def75fb4aa38297fb62d093a, type: 3}
   m_Name: Walking
   m_EditorClassIdentifier: Assembly-CSharp::MyProj.DifficultyGameData
+  maxPercentageOfSpawn: 100
   percentageOfSpawnHigh: 30
   percentageOfBatterySpawn: 30
   percentageOfSpawnAuxiliaryItems: 30

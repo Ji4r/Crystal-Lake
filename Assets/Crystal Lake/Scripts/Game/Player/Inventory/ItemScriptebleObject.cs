@@ -10,6 +10,8 @@ namespace MyProj
     [CreateAssetMenu(fileName = "Item", menuName = "SO/CreateItem/Item")]
     public class ItemScriptebleObject : ScriptableObject
     {
+        [SerializeField] private ushort id;
+
         [SerializeField] private string nameItem;
         [SerializeField] private string description;
         [SerializeField, PreviewObject(Height = 100)] private GameObject prefab;
@@ -21,6 +23,7 @@ namespace MyProj
         [SerializeField] private Vector3 rotation;
         [SerializeField] private Vector3 scale;
 
+        public ushort Id => id;
         public string NameItem { get => nameItem; }
         public string Description { get => description; }
         public GameObject Prefab { get => prefab; }

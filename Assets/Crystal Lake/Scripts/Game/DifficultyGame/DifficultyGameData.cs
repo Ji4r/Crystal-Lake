@@ -10,6 +10,8 @@ namespace MyProj
         [Title("Difficulty Settings")]
 
         [Header("Spawn prop"), Space(2)]
+        [SerializeField, Range(0, 100), Tooltip("Максимальный процент для расчёта")]
+        private byte maxPercentageOfSpawn; // Не подключено
         [SerializeField, Range(0, 100), Tooltip("Процент спавна хилок")]
         private byte percentageOfSpawnHigh; // Не подключено
         [SerializeField, Range(0, 100), Tooltip("Процент спавна батареек")]
@@ -82,5 +84,6 @@ namespace MyProj
         public bool ShowVoiceVolume => showVoiceVolume;
         public bool ShowStaminaLevel => showStaminaLevel;
         public bool ShowBatteryPercentage => showBatteryPercentage;
+        public byte MaxPercentageOfSpawn => maxPercentageOfSpawn;
     }
 }

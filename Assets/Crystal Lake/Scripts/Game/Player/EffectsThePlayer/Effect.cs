@@ -1,11 +1,15 @@
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
+using System;
 
 namespace MyProj
 {
-    public abstract class Effect
+    public abstract class Effect : IDisposable
     {
-        public virtual Task EnableEffect() => Task.CompletedTask;
-        public virtual Task DissableEffect() => Task.CompletedTask;
-        public virtual Task AddEffectTime() => Task.CompletedTask;
+        public float DurationEffect;
+
+        public virtual async UniTask EnableEffect() { }
+        public virtual async UniTask DissableEffect() { }
+        public virtual async UniTask AddDurationTimeEffect(float duration) { }
+        public abstract void Dispose();
     }
 }

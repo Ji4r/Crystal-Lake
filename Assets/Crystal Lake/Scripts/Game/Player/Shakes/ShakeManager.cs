@@ -4,7 +4,7 @@ using System;
 
 namespace MyProj
 {
-    public class ShakeManager : MonoBehaviour, ILocalOnly
+    public class ShakeManager : MonoBehaviour, IPartPlayer
     {
         [SerializeField] private CharacterMovement characterMovement;
         [SerializeField] private Camera playerCamera;
@@ -19,12 +19,13 @@ namespace MyProj
 
         private void Init()
         {
+            float startLocalY = playerCamera.transform.position.y;
             statesShake = new Dictionary<Type, ShakeState>
             {
-                {typeof(ShakeIdle), new ShakeIdle(playerCamera, presetIdle)},
-                {typeof(ShakeWalk), new ShakeWalk(playerCamera, presetWalk)},
-                {typeof(ShakeSprint), new ShakeSprint(playerCamera, presetSprint)},
-                {typeof(ShakeCrounch), new ShakeCrounch(playerCamera, presetCrounch)}
+                {typeof(ShakeIdle), new ShakeIdle(playerCamera, presetIdle, startLocalY)},
+                {typeof(ShakeWalk), new ShakeWalk(playerCamera, presetWalk, startLocalY)},
+                {typeof(ShakeSprint), new ShakeSprint(playerCamera, presetSprint, startLocalY)},
+                {typeof(ShakeCrounch), new ShakeCrounch(playerCamera, presetCrounch, startLocalY)}
             };
         }
 
@@ -90,7 +91,7 @@ namespace MyProj
             if (currentShake != null)
                 if (state.GetType() == currentShake.GetType())
                     return;
-
+            Debug.Log("Ilocal" + state.GetType());
             StopShake();
             currentShake = state;
             if (isStartPlay && !currentShake.isPlay)

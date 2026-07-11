@@ -5,6 +5,7 @@ namespace MyProj
 {
     public class MouseLook : NetworkBehaviour, IControllableMouse, ILocalOnly
     {
+        [SerializeField] private AllPartPlayer allPartPlayer;
         [SerializeField] private float mouseSensivity = 0.1f;
         [SerializeField] private Transform playerBody;
         [SerializeField] private Camera cameraPlayer;
@@ -16,6 +17,7 @@ namespace MyProj
 
         public bool CursorIsHide { get; private set; }
 
+        private GameObject localHands;
         private Transform cameraTrans;
         private float xRotation = 0f;
 
@@ -25,6 +27,8 @@ namespace MyProj
             cameraPlayer.enabled = false;
             cameraTrans = cameraPlayer.transform;
             SetStateCursor(false);
+            localHands = allPartPlayer.LocalHands;
+            localHands.SetActive(false);
         }
 
         public override void OnStartClient()
@@ -37,6 +41,7 @@ namespace MyProj
             {
                 audioListener.enabled = true;
                 cameraPlayer.enabled = true;
+                localHands.SetActive(true);
             }
         }
 
@@ -66,6 +71,7 @@ namespace MyProj
         {
             audioListener.enabled = false;
             cameraPlayer.enabled = false;
+            localHands.SetActive(false);
             this.enabled = false;
         }
     }

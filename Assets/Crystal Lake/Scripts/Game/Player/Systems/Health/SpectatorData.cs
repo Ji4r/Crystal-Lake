@@ -17,7 +17,14 @@ namespace MyProj
         [SerializeField] private Button backButton;
 
         private Transform target;
+        private GameObject localHands;
+        private GameObject handsOtherPlayer;
         private AllPartPlayer targetPlayer;
+
+        private void Start()
+        {
+            localHands = allPartPlayer.LocalHands;
+        }
 
         public void EnableSpectatorMode()
         {
@@ -25,6 +32,7 @@ namespace MyProj
             spectatorUi.SetActive(true);
             mainCamera.enabled = false;
             mainUi.SetActive(false); 
+            localHands.SetActive(false);
             //voiceChat.SetActive(false);
         }
 
@@ -34,6 +42,7 @@ namespace MyProj
             mainUi.SetActive(true);
             spectatorCamera.gameObject.SetActive(false);
             spectatorUi.SetActive(false);
+            localHands.SetActive(true);
             //voiceChat.SetActive(true);
         }
 
@@ -53,12 +62,12 @@ namespace MyProj
         {
             if (targetPlayer != null)
             {
-                targetPlayer.Get<CharacterControllMesh>().EnabledMesh();
+                targetPlayer.Get<CharacterControllMesh>().HideHandsPlayer(targetPlayer);
             }
 
             targetPlayer = allPart;
             target = allPart.CharacterCamera.transform;
-            targetPlayer.Get<CharacterControllMesh>().DisableMesh();
+            targetPlayer.Get<CharacterControllMesh>().ShowHandsPlayer(targetPlayer);
         }
 
         private void LateUpdate()
@@ -71,8 +80,6 @@ namespace MyProj
 
         private void OnDisable()
         {
-
-            Debug.Log("SpectatorData disabled");
             nextButton.onClick.RemoveAllListeners();
             backButton.onClick.RemoveAllListeners();
         }

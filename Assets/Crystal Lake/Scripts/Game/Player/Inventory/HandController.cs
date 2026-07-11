@@ -35,9 +35,8 @@ namespace MyProj
 
         private void ShowItem(uint oldId, uint newId)
         {
-            Debug.Log(
-    $"ShowItem owner={isOwned} local={isLocalPlayer} player={name}");
-            Debug.Log($"[{name}] ShowItem {oldId} -> {newId}");
+            //Debug.Log($"ShowItem owner={isOwned} local={isLocalPlayer} player={name}");
+            //Debug.Log($"[{name}] ShowItem {oldId} -> {newId}");
 
             if (currentItem != null)
             {
@@ -62,13 +61,13 @@ namespace MyProj
                 return;
             }
 
-            Debug.Log($"Item {newId} found");
+            //Debug.Log($"Item {newId} found");
 
             currentItem = identity.gameObject;
-            Debug.Log($"HandPoint = {(handPoint != null ? handPoint.name : "NULL")}");
+            //Debug.Log($"HandPoint = {(handPoint != null ? handPoint.name : "NULL")}");
             currentItem.transform.SetParent(handPoint, false);
 
-            Debug.Log($"Parent = {currentItem.transform.parent?.name}");
+            //Debug.Log($"Parent = {currentItem.transform.parent?.name}");
 
             Item item = currentItem.GetComponent<Item>();
 
@@ -79,9 +78,9 @@ namespace MyProj
             currentItem.transform.localRotation = Quaternion.Euler(item.item.Rotation);
             currentItem.transform.localScale = item.item.Scale;
             //currentItem.layer = item.item.SetLayerOnHandle;
-            Debug.Log($"Position = {currentItem.transform.position}");
-            Debug.Log($"LocalPos = {currentItem.transform.localPosition}");
-            Debug.Log($"WorldPos = {currentItem.transform.position}");
+            //Debug.Log($"Position = {currentItem.transform.position}");
+            //Debug.Log($"LocalPos = {currentItem.transform.localPosition}");
+            //Debug.Log($"WorldPos = {currentItem.transform.position}");
 
             Rigidbody rb = currentItem.GetComponent<Rigidbody>();
 

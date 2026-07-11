@@ -7,18 +7,19 @@ namespace MyProj
     public class CharacterControllMesh : NetworkBehaviour, IPartPlayer
     {
         [Header("Dissable")]
-        [SerializeField] private SkinnedMeshRenderer[] meshRendererForDissables;
+        public SkinnedMeshRenderer[] meshRendererForDissables;
         [SerializeField] private GameObject parentObjectForDisable;
         [SerializeField] private bool dissableChildObjects;
 
         [Header("Enables")]
-        [SerializeField] private SkinnedMeshRenderer[] meshRendererForEnables;
+        public GameObject parentLocalHands;
+        public SkinnedMeshRenderer[] meshRendererForEnables;
 
         public override void OnStartLocalPlayer()
         {
             if (!isLocalPlayer) return;
 
-            DisableMesh();
+            LocalDisableMesh();
         }
 
         public void EnabledMesh()
@@ -50,7 +51,7 @@ namespace MyProj
             }
         }
 
-        public void DisableMesh()
+        public void LocalDisableMesh()
         {
             foreach (var item in meshRendererForDissables)
             {
@@ -74,6 +75,49 @@ namespace MyProj
                     item.shadowCastingMode = ShadowCastingMode.Off;
                     item.gameObject.SetActive(false);
                 }
+            }
+        }
+
+
+        public void ShowHandsPlayer(AllPartPlayer allPartPlayer)
+        {
+            var controllMesh = allPartPlayer.Get<CharacterControllMesh>();
+            controllMesh.parentLocalHands.SetActive(true);
+            foreach (var item in controllMesh.meshRendererForDissables)
+            {
+                item.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
+                if (dissableChildObjects)
+                {
+                    parentObjectForDisable.SetActive(false);
+                }
+            }
+
+
+            foreach (var item in controllMesh.meshRendererForEnables)
+            {
+                item.shadowCastingMode = ShadowCastingMode.On;
+                item.gameObject.SetActive(true);
+            }
+        }
+
+        public void HideHandsPlayer(AllPartPlayer allPartPlayer)
+        {
+            var controllMesh = allPartPlayer.Get<CharacterControllMesh>();
+            controllMesh.parentLocalHands.SetActive(false);
+            foreach (var item in controllMesh.meshRendererForDissables)
+            {
+                item.shadowCastingMode = ShadowCastingMode.ShadowsOnly;
+                if (dissableChildObjects)
+                {
+                    parentObjectForDisable.SetActive(false);
+                }
+            }
+
+
+            foreach (var item in controllMesh.meshRendererForEnables)
+            {
+                item.shadowCastingMode = ShadowCastingMode.Off;
+                item.gameObject.SetActive(false);
             }
         }
     }

@@ -1,6 +1,4 @@
-using System.Drawing;
 using System.Linq;
-using TriInspector;
 using UnityEngine;
 
 namespace MyProj
@@ -17,6 +15,7 @@ namespace MyProj
     public class SpawnerByPoints : MonoBehaviour
     {
         [SerializeField] private SpawnPointData[] spawnPoints;
+
         /// <summary>
         /// Возвращает случайный Transform точки появления из массива spawnPoints. Игнорирует состояние точек (занята или свободна) и не изменяет его. Выбрасывает исключение, если массив spawnPoints null или пустой.
         /// </summary>
@@ -74,6 +73,24 @@ namespace MyProj
                     return;
                 }
             }
+        }
+
+        public int GetCountFreePoint()
+        {
+            int count = 0;
+
+            if (spawnPoints == null)
+            {
+                Debug.LogError("Массив с точками не создан");
+            }  
+            
+            foreach (var spawnPoint in spawnPoints)
+            {
+                if (spawnPoint.pointOccupied == false)
+                    count++;
+            }
+
+            return count;
         }
     }
 }

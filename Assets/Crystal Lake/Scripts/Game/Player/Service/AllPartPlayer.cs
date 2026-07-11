@@ -10,11 +10,16 @@ namespace MyProj
         public static readonly List<AllPartPlayer> Players = new();
 
         [SerializeField] private Camera characterCamera;
+        [SerializeField] private GameObject localHands;
         [SerializeField] private AudioListener audioListener;
         [SerializeField] private Transform voiceChatParent;
+        [SerializeField] private NetworkIdentity networkIdentity;
         public Camera CharacterCamera => characterCamera;
         public AudioListener AudioListener => audioListener;
         public Transform VoiceChatParent => voiceChatParent;
+
+        public GameObject LocalHands => localHands;
+        public NetworkIdentity MyNetworkIdentity { get => networkIdentity;}
 
         private Dictionary<Type, IPartPlayer> partPlayer;
 
