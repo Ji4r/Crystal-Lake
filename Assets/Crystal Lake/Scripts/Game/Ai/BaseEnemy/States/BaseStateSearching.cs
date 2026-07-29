@@ -116,6 +116,7 @@ namespace MyProj
         private async UniTask TryChekingSpot()
         {
             Debug.Log("Проверяю шкафы кровати и тд");
+            await UniTask.CompletedTask;
         }
 
         private async UniTask RotateTo(float angle, CancellationToken token)

@@ -21,8 +21,6 @@ namespace MyProj
         public DoorDirection directionOpen;
         public Vector3 ratationDoor;
         [HideInInspector] public Transform transformDoor;
-
-        [SerializeField] private bool doorUseLock = false;
         [SerializeField, Tooltip("—сылка на замок")] DoorLock doorLock;
 
         private void Awake()
@@ -32,7 +30,7 @@ namespace MyProj
         }
 
 #if UNITY_EDITOR
-        private void OnValidate()
+        protected override void OnValidate()
         {
             if (!Application.isPlaying)
                 return;

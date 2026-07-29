@@ -175,7 +175,7 @@ namespace MyProj
             return true;
         }
 
-        private void PlayerOnDeath()
+        private void PlayerOnDeath(AllPartPlayer partPlayer)
         {
             if (recoveryStamina != null)
             {

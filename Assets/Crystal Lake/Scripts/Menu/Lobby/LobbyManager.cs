@@ -24,7 +24,6 @@ namespace MyProj
         public static CSteamID CurrentLobbyID { get; private set; }
 
         public event Action OnLobbyUpdated;
-        public event Action<CSteamID> OnInviteReceived;
         public event Action<CSteamID, CSteamID> OnLobbyInviteReceived;
 
         private const string HostAddressKey = "HostAddress";

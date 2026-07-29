@@ -85,6 +85,7 @@ namespace MyProj
         public override async UniTask DissableEffect()
         {
             effectsOnPlayer?.DeleteEffect(this);
+            await UniTask.CompletedTask;
         }
 
         public override void Dispose()

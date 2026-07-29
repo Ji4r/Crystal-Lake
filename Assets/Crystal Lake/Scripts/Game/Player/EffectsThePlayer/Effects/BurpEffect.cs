@@ -54,6 +54,7 @@ namespace MyProj
         {
             Debug.Log("Dissable BurpEffect");
             effectsOnPlayer?.DeleteEffect(this);
+            await UniTask.CompletedTask;
         }
 
         public override void Dispose()

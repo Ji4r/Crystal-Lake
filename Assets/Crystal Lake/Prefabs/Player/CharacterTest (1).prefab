@@ -654,7 +654,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.54901963}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -5252,6 +5252,7 @@ GameObject:
   - component: {fileID: 2332363398925634209}
   - component: {fileID: 6641863897147665281}
   - component: {fileID: 3284881429798387973}
+  - component: {fileID: 811260567179965678}
   m_Layer: 6
   m_Name: CharacterTest (1)
   m_TagString: Player
@@ -5553,7 +5554,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  currentHealthOnInspector: 100
+  TakeDamageDebug: 0
+  partPlayer: {fileID: 2241526584713410139}
   maxHealth: 100
 --- !u!114 &5349893928977844632
 MonoBehaviour:
@@ -5572,7 +5574,6 @@ MonoBehaviour:
   staminaController: {fileID: 2954129978431475753}
   leftStaminaImg: {fileID: 4020819457220977870}
   rightStaminaImg: {fileID: 8643180846086050188}
-  durationHideStaminaBar: 1
   voiceVolume: {fileID: 5406363331118761675}
   staminaLevel: {fileID: 6030130443311443905}
   batteryPercentage: {fileID: 169659111827022332}
@@ -5846,6 +5847,21 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   allPartPlayer: {fileID: 2241526584713410139}
+--- !u!114 &811260567179965678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7202049337428363846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6709f5bc159417b4990da161c525229f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MyProj.PlayerState
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
 --- !u!1 &7379647392210269645
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,25 +13,33 @@ namespace MyProj
         private sbyte currentSpectatingIndex;
         private SpectatorData spectatorData;
         private MouseLook mouseLook;
+        private PlayerState playerState;
 
         private void Start()
         {
             healthManager = allPartPlayer.Get<HealthManager>();
             spectatorData = allPartPlayer.Get<SpectatorData>();
             mouseLook = allPartPlayer.Get<MouseLook>();
+            playerState = allPartPlayer.Get<PlayerState>();
 
-            healthManager.OnDeathClient += HandleDeath;
+            playerState.StateChanged += OnStateChanged;
         }
 
         private void OnDisable()
         {
-            healthManager.OnDeathClient -= HandleDeath;
+            playerState.StateChanged -= OnStateChanged;
+        }
+
+        private void OnStateChanged(PlayerState state)
+        {
+            if (state.CurrentState == StatesPlayer.IsSpectator)
+            {
+                HandleDeath();
+            }
         }
 
         private void HandleDeath()
         {
-            spectatorData.BtnNextPlayer(SpectateNextPlayer);
-            spectatorData.BtnBackPlayer(SpectateBackToPlayer);
             currentSpectatingIndex = -1;
             playersInGame = GetAllPlayerInGame();
 
@@ -42,6 +50,10 @@ namespace MyProj
                 return;
             }
 
+            spectatorData.SetInteractibleButton(playersInGame.Count > 1 ? true : false);
+            spectatorData.BtnNextPlayer(SpectateNextPlayer);
+            spectatorData.BtnBackPlayer(SpectateBackToPlayer);
+
             SetSpectatorMode();
         }
 
@@ -49,13 +61,13 @@ namespace MyProj
         {
             foreach (var part in allPartPlayer.GetAll<IPartPlayer>())
             {
-                if (part is CharacterSpectetor)
+                if (part is CharacterSpectetor || part is SpectatorData)
                     continue;
 
-               if (part is Behaviour behaviour)
-               {
+                if (part is Behaviour behaviour)
+                {
                     behaviour.enabled = false;
-               }
+                }
             }
 
             spectatorData.enabled = true;
@@ -69,31 +81,17 @@ namespace MyProj
 
         public void SpectateNextPlayer()
         {
-            if (!isLocalPlayer)
+            if (!CheckPlayerForSpecatate())
                 return;
-            Debug.Log("LocalPlayer");
-
-            playersInGame = GetAllPlayerInGame();
-
-            if (playersInGame.Count == 0)
-                return;
-
-            Debug.Log("Больше 0");
 
             currentSpectatingIndex = (sbyte)((currentSpectatingIndex + 1) % playersInGame.Count);
 
             spectatorData.SetTarget(playersInGame[currentSpectatingIndex]);
-            Debug.Log("Обновил таргет 0");
         }
 
         public void SpectateBackToPlayer()
         {
-            if (!isLocalPlayer)
-                return;
-
-            playersInGame = GetAllPlayerInGame();
-
-            if (playersInGame.Count == 0)
+            if (!CheckPlayerForSpecatate())
                 return;
 
             if (currentSpectatingIndex >= playersInGame.Count)
@@ -109,6 +107,20 @@ namespace MyProj
             }
 
             spectatorData.SetTarget(playersInGame[currentSpectatingIndex]);
+        }
+
+        private bool CheckPlayerForSpecatate()
+        {
+            if (!isLocalPlayer)
+                return false;
+
+            playersInGame = GetAllPlayerInGame();
+
+            if (playersInGame.Count == 0)
+                return false;
+
+            spectatorData.SetInteractibleButton(playersInGame.Count > 1 ? true : false);
+            return true;
         }
 
         private void SpectateFirstPlayer()
@@ -127,21 +139,27 @@ namespace MyProj
             spectatorData.SetTarget(playersInGame[currentSpectatingIndex]);
         }
 
+        public void UpdateTarget()
+        {
+            if (!CheckPlayerForSpecatate())
+                return;
+
+            currentSpectatingIndex = 0;
+
+            spectatorData.SetTarget(playersInGame[currentSpectatingIndex]);
+        }
+
         private List<AllPartPlayer> GetAllPlayerInGame()
         {
             var players = new List<AllPartPlayer>();
 
-            foreach (var player in AllPartPlayer.Players)
+            foreach (var player in StatePlayersManager.Players)
             {
                 if (player == allPartPlayer)
                     continue;
 
-                var health = player.Get<HealthManager>();
-
-                if (health.CurrentHealth <= 0)
-                    continue;
-
-                players.Add(player);
+                if (player.Get<PlayerState>().CurrentState == StatesPlayer.IsLive)
+                    players.Add(player);
             }
 
             return players;

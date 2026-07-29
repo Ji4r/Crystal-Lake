@@ -7,13 +7,12 @@ namespace MyProj
 {
     public class AllPartPlayer : NetworkBehaviour
     {
-        public static readonly List<AllPartPlayer> Players = new();
-
         [SerializeField] private Camera characterCamera;
         [SerializeField] private GameObject localHands;
         [SerializeField] private AudioListener audioListener;
         [SerializeField] private Transform voiceChatParent;
         [SerializeField] private NetworkIdentity networkIdentity;
+
         public Camera CharacterCamera => characterCamera;
         public AudioListener AudioListener => audioListener;
         public Transform VoiceChatParent => voiceChatParent;
@@ -23,11 +22,12 @@ namespace MyProj
 
         private Dictionary<Type, IPartPlayer> partPlayer;
 
-        public override void OnStopClient()
-        {
-            Players.Remove(this);
-        }
 
+        [Command]
+        private void CmdPlayerReady()
+        {
+            EntryPointGame.Instance.AddPlayerReady(this);
+        }
 
         private void Awake()
         {
@@ -46,16 +46,31 @@ namespace MyProj
 
         public override void OnStartClient()
         {
-            Players.Add(this);
-            if (isLocalPlayer) return;
-
-            foreach (var part in partPlayer.Values)
+            if (!isLocalPlayer)
             {
-                if (part is ILocalOnly localOnly)
+                foreach (var part in partPlayer.Values)
                 {
-                    localOnly.LocalDissable();
+                    if (part is ILocalOnly localOnly)
+                    {
+                        localOnly.LocalDissable();
+                    }
                 }
             }
+
+            CmdPlayerReady();
+        }
+
+        public override void OnStopServer()
+        {
+            //base.OnStopServer();
+
+            //var manager = FindFirstObjectByType<StatePlayersManager>();
+
+            //if (manager != null)
+            //{
+            //    Debug.Log("Я вышел ");
+            //    manager.RemoveDisconnectedPlayer(this);
+            //}
         }
 
         public T Get<T>() where T : class, IPartPlayer

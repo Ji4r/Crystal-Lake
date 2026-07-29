@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Mirror;
 using UnityEngine;
 
@@ -16,27 +17,38 @@ namespace MyProj
         private byte percentageOfSpawnAuxiliaryItems;
         private byte totalPercentage;
 
-        public override void OnStartServer()
+        public async UniTask<bool> StartSpawn(byte maxPercentage, byte percentageOfSpawnHigh,
+            byte percentageOfBatterySpawn, byte percentageOfSpawnAuxiliaryItems)
         {
-            items.InitializeLists();
-            ApplyDifferent();
-            SpawnItem();
+            await items.InitializeLists();
+
+            if (!ApplyDifferent(maxPercentage, percentageOfSpawnHigh,
+                percentageOfBatterySpawn,
+                percentageOfSpawnAuxiliaryItems))
+                throw new System.Exception("не удолось приминить настройки");
+
+            await ConfigurateProp();
+            return true;
         }
 
-        private void ApplyDifferent()
+        private bool ApplyDifferent(byte maxPercentage, byte percentageOfSpawnHigh, 
+            byte percentageOfBatterySpawn, byte percentageOfSpawnAuxiliaryItems)
         {
-            maxPercentage = DifficultyGame.Instance.Current.MaxPercentageOfSpawn;
-            percentageOfSpawnHigh = DifficultyGame.Instance.Current.PercentageOfSpawnHigh;
-            percentageOfBatterySpawn = DifficultyGame.Instance.Current.PercentageOfBatterySpawn;
-            percentageOfSpawnAuxiliaryItems = DifficultyGame.Instance.Current.PercentageOfSpawnAuxiliaryItems;
+            this.maxPercentage = maxPercentage;
+            this.percentageOfSpawnHigh = percentageOfSpawnHigh;
+            this.percentageOfBatterySpawn = percentageOfBatterySpawn;
+            this.percentageOfSpawnAuxiliaryItems = percentageOfSpawnAuxiliaryItems;
+
             totalPercentage = (byte)(percentageOfBatterySpawn + percentageOfSpawnAuxiliaryItems + percentageOfSpawnHigh);
-            if (totalPercentage > maxPercentage)
+            if (totalPercentage > maxPercentage) 
             {
                 Debug.LogError($"Сумма процентов спавна предметов - {totalPercentage} больше чем максимальный порог {maxPercentage}");
+                return false;
             }
+            return true;
         }
 
-        private void SpawnItem()
+        private async UniTask ConfigurateProp()
         {
             int countPointSpawn = spawnerByPoints.GetCountFreePoint();
 
@@ -46,12 +58,14 @@ namespace MyProj
             int batteryCount = Mathf.RoundToInt(maxSpawnCount * ((float)percentageOfBatterySpawn / totalPercentage));
             int auxiliaryCount = Mathf.RoundToInt(maxSpawnCount * ((float)percentageOfSpawnAuxiliaryItems / totalPercentage));
 
-            SpawnProp(items.healProp, healCount);
-            SpawnProp(items.batteryProp, batteryCount);
-            SpawnAuxiliaryItems(auxiliaryCount);
+            await UniTask.WhenAll(
+                SpawnProp(items.healProp, healCount),
+                SpawnProp(items.batteryProp, batteryCount),
+                SpawnAuxiliaryItems(auxiliaryCount)
+            );
         }
 
-        private void SpawnProp(Item[] listItem, int countSpawnProp)
+        private async UniTask SpawnProp(Item[] listItem, int countSpawnProp)
         {
             for (int i = 0; i < countSpawnProp; i++)
             {
@@ -63,10 +77,14 @@ namespace MyProj
                     Quaternion.identity);
 
                 NetworkServer.Spawn(item.gameObject);
+
+
+                if (i > 0 && i % 5 == 0)
+                    await UniTask.Yield();
             }
         }
 
-        private void SpawnAuxiliaryItems(int countSpawnProp)
+        private async UniTask SpawnAuxiliaryItems(int countSpawnProp)
         {
             for (int i = 0; i < countSpawnProp; i++)
             {
@@ -78,6 +96,9 @@ namespace MyProj
                     Quaternion.identity);
 
                 NetworkServer.Spawn(item.gameObject);
+
+                if (i > 0 && i % 5 == 0)
+                    await UniTask.Yield();
             }
         }
     }

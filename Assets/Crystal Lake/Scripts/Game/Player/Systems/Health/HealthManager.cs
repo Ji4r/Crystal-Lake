@@ -8,11 +8,13 @@ namespace MyProj
     public class HealthManager : NetworkBehaviour, IPartPlayer
     {
         [Header("Право созидателя")]
-        [SerializeField, Range(0,100)] private int currentHealthOnInspector;
+        [SerializeField, Range(0,100)] private int TakeDamageDebug;
+
         [Header("Health parameters")]
+        [SerializeField] private AllPartPlayer partPlayer;
         [SerializeField] private int maxHealth;
 
-        public Action OnDeathServer;
+        public event Action<AllPartPlayer> OnDeathServer;
         public Action OnDeathClient;
         public Action ResetParameters;
 
@@ -22,12 +24,12 @@ namespace MyProj
         [SyncVar(hook = nameof(OnCurrentHealthChanged))] private int currentHealth;
 
 #if UNITY_EDITOR
-        private void OnValidate()
+        protected override void OnValidate()
         {
             if (!Application.isPlaying)
                 return;
 
-            currentHealth = currentHealthOnInspector;
+            CmdTakeDamage(TakeDamageDebug);
         }
 #endif
 
@@ -56,7 +58,7 @@ namespace MyProj
             if (damage >= currentHealth)
             {
                 currentHealth = 0;
-                OnDeathServer?.Invoke();
+                OnDeathServer?.Invoke(partPlayer);
                 return;
             }
 
@@ -86,5 +88,6 @@ namespace MyProj
                 OnDeathClient?.Invoke();
             }
         }
+
     }
 }

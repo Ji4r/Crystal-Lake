@@ -16,6 +16,11 @@ MonoBehaviour:
   percentageOfSpawnHigh: 20
   percentageOfBatterySpawn: 20
   percentageOfSpawnAuxiliaryItems: 10
+  currentPercentage: 0
+  percentageChestsToFill: 100
+  chestFillPercentage:
+    minValue: 15
+    maxValue: 50
   isEnabledAlways: 0
   countNotesForKeypad:
     minValue: 1

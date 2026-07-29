@@ -45,7 +45,7 @@ namespace MyProj
         CharacterAnimator animator;
 
 #if UNITY_EDITOR
-        private void OnValidate()
+        protected override void OnValidate()
         {
             if (!Application.isPlaying)
                 return;

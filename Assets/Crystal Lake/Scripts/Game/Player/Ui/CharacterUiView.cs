@@ -13,7 +13,6 @@ namespace MyProj
         [SerializeField] private StaminaController staminaController;
         [SerializeField] private Image leftStaminaImg;
         [SerializeField] private Image rightStaminaImg;
-        [SerializeField] private float durationHideStaminaBar = 1f;
 
         [Title("Window")]
         [SerializeField] private GameObject voiceVolume;
@@ -62,17 +61,6 @@ namespace MyProj
             inputReader = characterManager.GetComponent<IInputReader>();
         }
 
-        private void ChangeBatteryLevel(float max, float current)
-        {
-            batteryPercentageText.text = $"{current}%";
-            batteryfieldImage.fillAmount = current / max;
-        }
-
-        private void OnStaminaChanged(float maxStamina, float currentStamina)
-        {
-            leftStaminaImg.fillAmount = currentStamina / maxStamina;
-            rightStaminaImg.fillAmount = currentStamina / maxStamina;
-        }
 
         public void LocalDissable()
         {
@@ -108,6 +96,18 @@ namespace MyProj
         public void Exit()
         {
             HideWindow();
+        }
+
+        private void ChangeBatteryLevel(float max, float current)
+        {
+            batteryPercentageText.text = $"{current}%";
+            batteryfieldImage.fillAmount = current / max;
+        }
+
+        private void OnStaminaChanged(float maxStamina, float currentStamina)
+        {
+            leftStaminaImg.fillAmount = currentStamina / maxStamina;
+            rightStaminaImg.fillAmount = currentStamina / maxStamina;
         }
 
         private void ShowWindow(GameObject window)

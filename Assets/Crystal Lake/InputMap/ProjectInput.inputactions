@@ -1,0 +1,47 @@
+{
+    "version": 1,
+    "name": "ProjectInput",
+    "maps": [
+        {
+            "name": "MainMap",
+            "id": "95e068fb-dd8d-44cf-bc2a-7312f3e9505e",
+            "actions": [
+                {
+                    "name": "Console",
+                    "type": "Button",
+                    "id": "76c8fe34-49b9-4e3e-8427-d64fbefdeefc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "169ec643-1f6f-48cb-ba53-6a45cc7ecff7",
+                    "path": "<Keyboard>/backquote",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard",
+                    "action": "Console",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "Keyboard",
+            "bindingGroup": "Keyboard",
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}

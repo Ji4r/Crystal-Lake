@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -20,10 +19,12 @@ namespace MyProj
         private GameObject localHands;
         private GameObject handsOtherPlayer;
         private AllPartPlayer targetPlayer;
+        private PlayerState statePlayer;
 
         private void Start()
         {
             localHands = allPartPlayer.LocalHands;
+            statePlayer = allPartPlayer.Get<PlayerState>();
         }
 
         public void EnableSpectatorMode()
@@ -43,7 +44,13 @@ namespace MyProj
             spectatorCamera.gameObject.SetActive(false);
             spectatorUi.SetActive(false);
             localHands.SetActive(true);
-            //voiceChat.SetActive(true);
+            //voiceChat.SetActive(true); 
+        }
+
+        public void SetInteractibleButton(bool isActive)
+        {
+            nextButton.interactable = isActive;
+            backButton.interactable = isActive;
         }
 
         public void BtnNextPlayer(UnityAction onClick)
@@ -72,8 +79,14 @@ namespace MyProj
 
         private void LateUpdate()
         {
-            if (target == null)
+            if (target == null && targetPlayer == null)
+            {
+                if (statePlayer.CurrentState != StatesPlayer.IsSpectator)
+                    return;
+
+                allPartPlayer.Get<CharacterSpectetor>().UpdateTarget(); // баг какой то игрок становится тенью
                 return;
+            }
 
             spectatorCamera.SetPositionAndRotation(target.position, target.rotation);
         }

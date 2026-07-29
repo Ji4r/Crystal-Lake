@@ -101,7 +101,6 @@ namespace MyProj
         [Command]
         private void CmdMakeNoise(NoiseType noiseType)
         {
-            Debug.Log(noiseType);
             float radius = GetNoiseRadius(noiseType);
             currentDebugRadius = radius;
 

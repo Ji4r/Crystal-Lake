@@ -1,4 +1,5 @@
 ﻿<Solution>
+  <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Zenject.csproj" />
   <Project Path="Zenject-IntegrationTests-Editor.csproj" />
@@ -31,6 +32,5 @@
   <Project Path="Zenject-PoolMonitor-Editor.csproj" />
   <Project Path="Mirror.CompilerSymbols.csproj" />
   <Project Path="UniTask.Editor.csproj" />
-  <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="UniTask.DOTween.csproj" />
 </Solution>

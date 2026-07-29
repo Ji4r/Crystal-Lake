@@ -191,7 +191,6 @@ GameObject:
   - component: {fileID: 8725701450099301555}
   - component: {fileID: 8301983736825358221}
   - component: {fileID: 5369384956791901388}
-  - component: {fileID: 4938374915086536961}
   - component: {fileID: 4657269831369644232}
   m_Layer: 0
   m_Name: Chest
@@ -253,26 +252,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  lootingPropsData: {fileID: 4938374915086536961}
+  lootingPropsData: {fileID: 0}
   countSlot: 6
---- !u!114 &4938374915086536961
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5226937288139448619}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f430e0d0950a4346bb7ac80f23e3ae3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MyProj.LootingPropsData
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  listItems:
-  - {fileID: 11400000, guid: 5a548cd58c047554e890b68340fb2227, type: 2}
-  - {fileID: 11400000, guid: 10cfd941423d18045a3b1ffd00af108e, type: 2}
 --- !u!114 &4657269831369644232
 MonoBehaviour:
   m_ObjectHideFlags: 0

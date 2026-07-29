@@ -1,14 +1,18 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using System;
 
 namespace MyProj
 {
-    public class InventorySlot : MonoBehaviour
+    public class InventorySlot : MonoBehaviour, IPointerDownHandler
     {
         [SerializeField] private ItemScriptebleObject item;
         [SerializeField] private bool isEmpty = true;
         [SerializeField] private Image iconSlot;
         [SerializeField] private Image icon;
+
+        public Func<ushort, bool> OnClickSlot;
 
         public ItemScriptebleObject Item { get => item; }
         public bool IsEmpty { get => isEmpty; }
@@ -34,10 +38,10 @@ namespace MyProj
 
         private void SetIcon(Sprite _icon = null)
         {
-            Debug.Log(item == null);
-            Debug.Log(item?.NameItem);
-            Debug.Log(item?.Icon);
-            Debug.Log(item?.Prefab);
+            //Debug.Log(item == null);
+            //Debug.Log(item?.NameItem);
+            //Debug.Log(item?.Icon);
+            //Debug.Log(item?.Prefab);
             Icon.color = new Color(1, 1, 1, 1);
             if (_icon != null)
             {
@@ -51,5 +55,13 @@ namespace MyProj
                 Icon.color = new Color(1, 1, 1, 0);
             }
         }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            Debug.Log("Нажал на слот с помощью IPointerDownHandler - " + gameObject.name);
+            Debug.Log("Лежит объект - " + item?.NameItem);
+            OnClickSlot?.Invoke(item.Id);
+        }
+
     }
 }

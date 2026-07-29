@@ -2,6 +2,7 @@ using Mirror;
 using TriInspector;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 namespace MyProj
 {
@@ -37,6 +38,8 @@ namespace MyProj
         private MouseLook mouseLook;
         private IInputReader inputReader;
         private Container container;
+        private QuickSlotInventory quickSlotInventory;
+
 
         private void Awake()
         {
@@ -49,6 +52,7 @@ namespace MyProj
 
             characterManager = partPlayer.Get<CharacterManager>();
             mouseLook = partPlayer.Get<MouseLook>();
+            quickSlotInventory = partPlayer.Get<QuickSlotInventory>();
             inputReader = characterManager.GetComponent<IInputReader>();
         }
 
@@ -65,7 +69,6 @@ namespace MyProj
         private void InitializeGrid()
         {
             grid = new SlotLooting[maxSizeGrid.x * maxSizeGrid.y];
-
             int index = 0;
 
             for (int y = 0; y < maxSizeGrid.y; y++)
@@ -83,9 +86,11 @@ namespace MyProj
             HideWindow();
         }
 
-        public void ShowGrid(byte countSlot, Container container, SyncDictionary<byte, ushort> listItem)
+        public void ShowGrid(byte countSlot, Container container, SyncList<SlotContainer> listItem)
         {
             this.container = container;
+            SubscrabeActionClickSlot(container, quickSlotInventory.slots, true);
+
             foreach (var item in grid)
             {
                 item.inventorySlot.ClearSlot();
@@ -107,16 +112,25 @@ namespace MyProj
                 grid[i].inventorySlot.gameObject.SetActive(true);
             }
 
-            foreach (var pair in listItem)
+            for (int i = 0; i < listItem.Count; i++)
             {
-                Debug.Log($"{pair.Key} -> {pair.Value}");
+                ItemScriptebleObject item = itemDatabase.Get(listItem[i].IdProp);
 
-                if (pair.Key >= countSlot)
-                    throw new System.Exception("Слотов меньше, но вы пытаетесь выйти за границы массива");
+                grid[i].inventorySlot.SetItem(item);
+            }
+        }
 
-                ItemScriptebleObject item = itemDatabase.Get(pair.Value);
-
-                grid[pair.Key].inventorySlot.SetItem(item);
+        public void UpdateGrid()
+        {
+            foreach (var item in grid)
+            {
+                item.inventorySlot.ClearSlot();
+            }
+            List<SlotContainer> listItem = container.GetListItem();
+            for (int i = 0; i < listItem.Count; i++)
+            {
+                ItemScriptebleObject item = itemDatabase.Get(listItem[i].IdProp);
+                grid[i].inventorySlot.SetItem(item);
             }
         }
 
@@ -132,11 +146,37 @@ namespace MyProj
                 container.CmdSetIsOpen(false);
             }
 
+            SubscrabeActionClickSlot(container, quickSlotInventory.slots, false);
+
             uiLooting.SetActive(false);
 
             inputReader.SetActiveMap(MapInputSystem.GAMEPLAY);
             mouseLook.SetStateCursor(false);
             characterManager.SetExitHandler(null);
+        }
+
+        private void SubscrabeActionClickSlot(Container cont, List<InventorySlot> slots, bool isSub)
+        {
+            foreach (var slot in slots)
+            {
+                if (isSub)
+                    slot.OnClickSlot += TryAddPropInContainer;
+                else
+                    slot.OnClickSlot -= TryAddPropInContainer;
+            }
+        }
+
+        private bool TryAddPropInContainer(ushort id)
+        {
+            if (!container.TryAddPropInContainer(id))
+            {
+                Debug.LogWarning("Не удолось добавить");
+                return false;
+            }
+
+            UpdateGrid();
+            Debug.LogWarning("Добавление прошло успешно");
+            return true;
         }
     }
 }

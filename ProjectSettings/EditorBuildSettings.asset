@@ -18,5 +18,5 @@ EditorBuildSettings:
     path: Assets/Crystal Lake/Scenes/MyTestSeen.unity
     guid: 04b25dc2136b6884e86baae5668c25dc
   m_configObjects:
-    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: ef9b52b0befb53545a34c7d78342c440, type: 3}
   m_UseUCBPForAssetBundles: 0

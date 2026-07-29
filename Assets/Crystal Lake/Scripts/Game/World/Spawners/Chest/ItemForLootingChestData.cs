@@ -4,11 +4,12 @@ using UnityEngine;
 
 namespace MyProj
 {
-    public class LootingPropsData : NetworkBehaviour
+    public class ItemForLootingChestData : NetworkBehaviour
     {
         [SerializeField] private List<ItemScriptebleObject> startItems;
 
-        public SyncList<ushort> Items { get; private set; } = new();
+        public readonly SyncList<ushort> items = new();
+        public SyncList<ushort> Items => items;
 
         [Server]
         public void Initialize()

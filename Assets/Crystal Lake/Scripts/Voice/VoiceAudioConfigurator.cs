@@ -9,9 +9,9 @@ namespace MyProj
 {
     public class VoiceAudioConfigurator : MonoBehaviour
     {
-        [SerializeField] private float attachDelay = 1f;
-        [SerializeField] private float playerSearchRetryDelay = 0.5f;
-        [SerializeField] private int playerSearchRetryCount = 5;
+        //[SerializeField] private float attachDelay = 1f;
+        //[SerializeField] private float playerSearchRetryDelay = 0.5f;
+        //[SerializeField] private int playerSearchRetryCount = 5;
 
         private VoiceSettings settings;
 
@@ -19,13 +19,10 @@ namespace MyProj
         private void Construct(VoiceSettings settings)
         {
             this.settings = settings;
-            Debug.Log("VoiceAudioConfigurator constructed with settings");
-            Debug.Log($"MinDistance: {settings.MinDistance}, MaxDistance: {settings.MaxDistance}, SpatialBlendInMenu: {settings.SpatialBlendInMenu}, SpatialBlendInGame: {settings.SpatialBlendInGame}");
         }
 
         private void OnEnable()
         {
-            Debug.Log("VoiceAudioConfigurator enabled");
             //StreamedAudioSourceOutput.OnCreated += HandleVoiceCreated;
             SceneManager.sceneLoaded += OnSceneLoaded;
         }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using TriInspector;
+using Cysharp.Threading.Tasks;
 
 namespace MyProj
 {
@@ -43,8 +44,8 @@ namespace MyProj
         }
 #endif
 
-        public void InitializeLists()
-        {       
+        public async UniTask InitializeLists()
+        {
             isException = !IsCalculatingSpawnPercentageItem();
 
             if (isException)
@@ -63,6 +64,8 @@ namespace MyProj
                     allItems[itemFromSpawnData[i].item] = (byte)(itemFromSpawnData[i - 1].chance + itemFromSpawnData[i].chance);
                 }
             }
+
+            await UniTask.CompletedTask;
         }
 
         public Item GetRandomProp()

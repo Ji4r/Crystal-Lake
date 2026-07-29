@@ -12,8 +12,8 @@ namespace MyProj
 
         [Header("Timing")]
         [SerializeField] private float walkStepDelay = 0.5f;
-        [SerializeField] private float sprintStepDelay = 0.35f;
-        [SerializeField] private float crouchStepDelay = 0.7f;
+        //[SerializeField] private float sprintStepDelay = 0.35f;
+        //[SerializeField] private float crouchStepDelay = 0.7f;
 
         [Header("Sounds")]
         [SerializeField] private List<SurfaceSound> surfaces;

@@ -1,27 +1,36 @@
 using Mirror;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace MyProj
 {
     public class Container : NetworkBehaviour
     {
-        [SerializeField] private LootingPropsData lootingPropsData;
         [SerializeField] private byte countSlot;
 
         [SyncVar(hook = nameof(ChangeOpen))] private bool isOpened;
 
-        private SyncDictionary<byte, ushort> itemWithIndexSlot = new();
+        public byte CountSlot => countSlot; 
+
+        private readonly SyncList<SlotContainer> itemWithIndexSlot = new();
+
 
         public override void OnStartServer()
         {
-            lootingPropsData.Initialize();
-            InitializeSlotItems();
+            InitListObjects();
         }
 
-        private void ChangeOpen(bool oldValue, bool newValue)
+        [Command(requiresAuthority = false)]
+        public void CmdSetIsOpen(bool state)
         {
-            isOpened = newValue;
+            isOpened = state;
+        }
+
+        public List<SlotContainer> GetListItem()
+        {
+            return itemWithIndexSlot.ToList();
         }
 
         [Server]
@@ -34,44 +43,63 @@ namespace MyProj
             isOpened = true;
         }
 
+        [Server]
+        public bool TryAddPropInContainer(ushort idProp)
+        {
+            if (itemWithIndexSlot == null || itemWithIndexSlot.Count != countSlot)
+            {
+                InitListObjects();
+
+                if (itemWithIndexSlot == null || itemWithIndexSlot.Count != countSlot)
+                {
+                    Debug.LogError("Словарь null или пуст", this);
+                    return false;
+                }
+            }
+
+            List<byte> slots = new List<byte>(countSlot);
+
+            for (byte i = 0; i < itemWithIndexSlot.Count; i++)
+            {
+                if (!itemWithIndexSlot[i].IsFill)
+                    slots.Add(i);
+            }
+
+            if (slots.Count == 0)
+            {
+                Debug.LogError("Пустых слотов не было найдено");
+                return false;
+            }
+
+            byte idSlot = (byte)Random.Range(0, slots.Count);
+            int index = slots[idSlot];
+
+            var slot = itemWithIndexSlot[index];
+            slot.SetProp(idProp);
+            itemWithIndexSlot[index] = slot;
+
+            return true;
+        }
+
         [TargetRpc]
         private void TargetOpen(NetworkConnection target, AllPartPlayer allPartPlayer)
         {
-            Debug.Log(itemWithIndexSlot.Count);
-            foreach (var pair in itemWithIndexSlot)
-            {
-                Debug.Log($"Slot: {pair.Key}, Item: {pair.Value}");
-            }
+            Debug.Log(itemWithIndexSlot.Count(x => x.IsFill == true));
             var viewUiLootingProps = allPartPlayer.Get<ViewUiLootingProps>();
             viewUiLootingProps.ShowGrid(countSlot, this, itemWithIndexSlot);
         }
 
-        private void InitializeSlotItems()
+        private void ChangeOpen(bool oldValue, bool newValue)
         {
-            if (lootingPropsData.Items.Count > countSlot)
-                throw new System.Exception("Кол-во предметов больше чем слотов в данном хранилище");
-
-            List<byte> slots = new List<byte>(countSlot);
-
-            for (byte i = 0; i < countSlot; i++)
-            {
-                slots.Add(i);
-            }
-
-            for (byte i = 0; i < lootingPropsData.Items.Count; i++)
-            {
-                byte index = (byte)Random.Range(0, slots.Count);
-
-                itemWithIndexSlot[slots[index]] = lootingPropsData.Items[i];
-
-                slots.RemoveAt(index);
-            }
+            isOpened = newValue;
         }
 
-        [Command(requiresAuthority = false)]
-        public void CmdSetIsOpen(bool state)
+        private void InitListObjects()
         {
-            isOpened = state;
+            for (byte i = 0; i < countSlot; i++)
+            {
+                itemWithIndexSlot.Add(new SlotContainer(false));
+            }
         }
     }
 }
