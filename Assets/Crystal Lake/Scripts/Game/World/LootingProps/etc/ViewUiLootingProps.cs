@@ -115,7 +115,7 @@ namespace MyProj
             for (int i = 0; i < listItem.Count; i++)
             {
                 ItemScriptebleObject item = itemDatabase.Get(listItem[i].IdProp);
-
+                Debug.Log(item?.Id);
                 grid[i].inventorySlot.SetItem(item);
             }
         }

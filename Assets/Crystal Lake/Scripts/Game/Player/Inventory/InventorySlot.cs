@@ -19,6 +19,13 @@ namespace MyProj
         public Image IconSlot { get => iconSlot; }
         public Image Icon { get => icon; }
 
+        private bool isTransferToContainerIsUnderway;
+
+        private void Start()
+        {
+            isTransferToContainerIsUnderway = false;
+        }
+
         /// <summary>
         /// Устанавливает предмет в слот и обновляет его состояние. Если переданный предмет равен null,
         /// слот считается пустым, и иконка скрывается. В противном случае, иконка отображается с изображением предмета.
@@ -60,7 +67,18 @@ namespace MyProj
         {
             Debug.Log("Нажал на слот с помощью IPointerDownHandler - " + gameObject.name);
             Debug.Log("Лежит объект - " + item?.NameItem);
-            OnClickSlot?.Invoke(item.Id);
+
+            if (isTransferToContainerIsUnderway && OnClickSlot != null)
+                return;
+
+            isTransferToContainerIsUnderway = true;
+
+            if (OnClickSlot.Invoke(item.Id))
+            {
+                SetItem(null);
+            }
+
+            isTransferToContainerIsUnderway = false;
         }
 
     }

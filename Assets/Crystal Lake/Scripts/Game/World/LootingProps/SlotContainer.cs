@@ -2,12 +2,12 @@ namespace MyProj
 {
     public struct SlotContainer 
     {
-        public ushort IdProp { get; private set; }
-        public bool IsFill { get; private set; }
+        public ushort IdProp;
+        public bool IsFill;
 
         public SlotContainer(bool IsFill)
         {
-            this.IsFill = false;
+            this.IsFill = IsFill;
             IdProp = ushort.MaxValue;
         }
 

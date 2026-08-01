@@ -35,6 +35,7 @@ namespace MyProj
         {
             itemForLooting.Initialize();
             var chests = GetAvalibleChest();
+            Debug.Log("Chest's count - " + chests.Count);
             FillChest(chests, itemForLooting);
             await UniTask.CompletedTask;
         }
